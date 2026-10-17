@@ -1,0 +1,392 @@
+/* Promiedos Glow — visual refresh.
+
+   Selectors use [class*=] because the site ships CSS-module classes with hashed
+   suffixes that change between builds.
+
+   Every improvement lives inside a block gated by
+     html:not([data-pg-off~="<feature>"]) { ... }
+   so the settings panel (content.js / layout.js set html[data-pg-off]) can switch
+   it off without reloading. Nested selectors all start with `&` (CSS nesting). */
+
+/* Palette: shared by the page styles and the highlight, never gated. */
+:root {
+  --pg-bg: #07130e;
+  --pg-surface: #0e211a;
+  --pg-surface-2: #12291f;
+  --pg-line: rgba(255, 255, 255, 0.08);
+  --pg-line-strong: rgba(255, 255, 255, 0.16);
+  --pg-text: #e8f1ec;
+  --pg-muted: #8aa399;
+  --pg-accent: #b6f26b;
+  --pg-accent-soft: rgba(182, 242, 107, 0.12);
+  --pg-radius: 14px;
+}
+
+/* ===== theme: dark look, top bar, tables, cards ============================ */
+html:not([data-pg-off~="theme"]) {
+  /* Override the site's own tokens so every component inherits the new look */
+  --background: var(--pg-bg);
+  --green: var(--pg-accent);
+  --green-dark: var(--pg-surface);
+  --table-even: var(--pg-surface);
+  --table-odd: var(--pg-surface-2);
+  --green-background-even: var(--pg-surface);
+  --green-background-odd: var(--pg-surface-2);
+  --border: var(--pg-line-strong);
+  --calendario-border: var(--pg-line);
+  --hover: var(--pg-accent);
+
+  &,
+  & body {
+    background:
+      radial-gradient(1200px 500px at 70% -10%, rgba(182, 242, 107, 0.07), transparent 60%),
+      var(--pg-bg) !important;
+    color: var(--pg-text);
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif !important;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* One solid top bar. Only the <header> itself: a [class*="header_"] selector
+     would also hit header__container, header__logo and the fixtures'
+     event-header buttons, stacking borders and backgrounds on each. */
+  & header {
+    background: #07130e !important;
+    border-bottom: 2px solid var(--pg-accent) !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45) !important;
+    z-index: 50;
+  }
+
+  /* Sidebar */
+  & [class*="aside_mainBlockAside"] {
+    background: var(--pg-surface) !important;
+    border: 1px solid var(--pg-line);
+    border-radius: var(--pg-radius);
+  }
+  & [class*="aside_selectBlockButton"] {
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    border-radius: 10px;
+    transition: background 0.15s;
+  }
+  & [class*="aside_selectBlockButton"]:hover { background: var(--pg-accent-soft); }
+  & [class*="aside_selectItem"] a {
+    border-radius: 8px;
+    color: var(--pg-muted);
+    transition: color 0.15s, background 0.15s;
+  }
+  & [class*="aside_selectItem"] a:hover { color: var(--pg-text); background: rgba(255, 255, 255, 0.05); }
+  & [class*="aside_active_link"] a { color: var(--pg-accent) !important; font-weight: 600; }
+
+  /* League title */
+  & [class*="title_title"] {
+    font-size: 1.6rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    text-transform: none;
+  }
+
+  /* Tabs */
+  & [class*="tabs-trigger_triggers"] {
+    border-bottom: 1px solid var(--pg-line) !important;
+    gap: 4px;
+  }
+  & [class*="tabs-trigger_button"] {
+    color: var(--pg-muted);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    border-radius: 10px 10px 0 0;
+    transition: color 0.15s, background 0.15s;
+  }
+  & [class*="tabs-trigger_button"]:hover { color: var(--pg-text); background: var(--pg-accent-soft); }
+  & [class*="tabs-trigger_button"][class*="active"],
+  & [class*="tabs-trigger_button"][aria-selected="true"] {
+    color: var(--pg-accent) !important;
+    border-bottom: 2px solid var(--pg-accent) !important;
+  }
+
+  /* Cards (standings / fixture blocks) */
+  & [class*="block_block"] {
+    background: var(--pg-surface) !important;
+    border: 1px solid var(--pg-line) !important;
+    border-radius: var(--pg-radius) !important;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
+    overflow: hidden;
+  }
+  & [class*="block_title"] {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--pg-muted);
+  }
+
+  /* Standings table */
+  & [class*="table_table_wrapper"] { background: transparent !important; }
+  & [class*="thead_thead"] {
+    background: transparent !important;
+    color: var(--pg-muted);
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  & [class*="row_row"] {
+    background: transparent !important;
+    border-bottom: 1px solid var(--pg-line) !important;
+    transition: background 0.12s;
+  }
+  & [class*="tbody_tablebody"] [class*="row_row"]:hover { background: var(--pg-accent-soft) !important; }
+  & [class*="td_bold"] { font-weight: 700; color: var(--pg-text); }
+  & [class*="td_opacity"] { color: var(--pg-muted); }
+
+  /* Last-5 form bubbles */
+  & [class*="command-history-result_win"],
+  & [class*="command-history-result_draw"],
+  & [class*="command-history-result_loss"] {
+    border-radius: 6px !important;
+    font-weight: 700;
+  }
+  & [class*="command-history-result_win"]  { background: #2fb457 !important; }
+  & [class*="command-history-result_draw"] { background: #6b7c74 !important; }
+  & [class*="command-history-result_loss"] { background: #e5484d !important; }
+
+  /* Match cards */
+  & [class*="item_item"],
+  & [class*="item-event"] {
+    background: var(--pg-surface-2) !important;
+    border: 1px solid var(--pg-line) !important;
+    border-radius: 12px !important;
+    transition: transform 0.15s, border-color 0.15s;
+  }
+  & [class*="item_item"]:hover,
+  & [class*="item-event"]:hover {
+    transform: translateY(-1px);
+    border-color: var(--pg-accent);
+  }
+  & [class*="time_status"] { font-weight: 700; color: var(--pg-muted); }
+  & [class*="result_number"] { font-weight: 800; font-size: 1.05rem; }
+  & [class*="event-header_button"] {
+    background: var(--pg-surface-2) !important;
+    border-radius: 10px;
+    font-weight: 600;
+  }
+
+  /* Selects / dropdowns */
+  & [class*="select-trigger_button"],
+  & [class*="league-select_select"] {
+    background: var(--pg-surface-2) !important;
+    border: 1px solid var(--pg-line-strong) !important;
+    border-radius: 10px !important;
+  }
+
+  /* Footer */
+  & [class*="layout_footer"] { background: transparent !important; color: var(--pg-muted); border-top: 1px solid var(--pg-line); }
+
+  /* Scrollbars */
+  & * { scrollbar-width: thin; scrollbar-color: var(--pg-line-strong) transparent; }
+}
+
+/* ===== ads: hide ad frames ================================================= */
+html:not([data-pg-off~="ads"]) {
+  & iframe[src*="adsage"],
+  & iframe[src*="doubleclick"],
+  & iframe[src*="googlesyndication"],
+  & ins.adsbygoogle,
+  & div:not([class]):not([id]):has(> iframe[src*="adsage"]),
+  & div:not([class]):not([id]):has(> div:not([class]) > iframe[src*="adsage"]) {
+    display: none !important;
+  }
+}
+
+/* ===== highlight: my club in tables and fixtures (classes set by content.js) = */
+html:not([data-pg-off~="highlight"]) {
+  & tr.pg-fav-row,
+  & tr.pg-fav-row td:not([style*="background"]) {
+    background: rgba(182, 242, 107, 0.2) !important;
+  }
+  & tr.pg-fav-row td:first-child { box-shadow: inset 3px 0 0 var(--pg-accent); }
+  & a.pg-fav-match {
+    border-color: var(--pg-accent) !important;
+    box-shadow: 0 0 0 1px var(--pg-accent), 0 0 18px rgba(182, 242, 107, 0.25);
+  }
+}
+
+/* ===== crests: readable on dark backgrounds ================================ */
+/* A hairline light edge plus a soft shadow keeps dark crests (Boca, Newell's,
+   Talleres...) readable without changing their size. */
+html:not([data-pg-off~="crests"]) {
+  & img[src*="/images/team/"] {
+    object-fit: contain;
+    filter: drop-shadow(0 0 0.6px rgba(255, 255, 255, 0.9)) drop-shadow(0 1px 2px rgba(0, 0, 0, 0.55));
+    transition: transform 0.15s ease, filter 0.15s ease;
+  }
+  & tr[class*="row_row"]:hover img[src*="/images/team/"],
+  & a[class*="item_item"]:hover img[src*="/images/team/"] {
+    transform: scale(1.18);
+  }
+}
+html:not([data-pg-off~="crests"]):not([data-pg-off~="highlight"]) {
+  & tr.pg-fav-row img[src*="/images/team/"],
+  & a.pg-fav-match img[src*="/images/team/"] {
+    filter: drop-shadow(0 0 0.6px rgba(255, 255, 255, 0.9)) drop-shadow(0 0 5px rgba(182, 242, 107, 0.85));
+  }
+}
+
+/* ===== layout: adapts to screen and window size ============================ */
+/* html[data-pg-*] attributes and --pg-* variables come from layout.js. */
+html:not([data-pg-off~="layout"]) {
+  --pg-cap: 1204px;
+  --pg-zoom: 1;
+  &[data-pg-tier="lg"]  { --pg-cap: 1360px; }
+  &[data-pg-tier="xl"]  { --pg-cap: 1680px; }
+  &[data-pg-tier="xxl"] { --pg-cap: 2000px; --pg-zoom: 1.1; }
+  &[data-pg-tier="uw"]  { --pg-cap: 2300px; --pg-zoom: 1.25; }
+
+  /* Align the bar's content with the page content instead of the site's 1204px cap. */
+  & .header__container { max-width: var(--pg-cap) !important; }
+  & .main-block__container { max-width: var(--pg-cap) !important; }
+  & #__next { zoom: var(--pg-zoom); }
+
+  /* Tables flow in as many columns as fit at every width. */
+  & [class*="page-layout_dashboard__layout_left"] {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(min(420px, 100%), 1fr));
+    gap: 16px;
+    align-items: start;
+    min-width: 0;
+    grid-auto-flow: row dense;
+  }
+
+  /* Lower blocks: player stats span the full row and lay their cards out in a
+     grid; dense packing fills gaps left by tables of different heights. */
+  & [class*="page-layout_dashboard__layout_left"] > [class*="block_block"]:has(> .flex-16) {
+    grid-column: 1 / -1;
+  }
+  & [class*="page-layout_dashboard__layout_left"] > [class*="block_block"] > .flex-16 {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr));
+    gap: 16px;
+    align-items: start;
+  }
+
+  /* Below 1201px the site stacks tables over fixtures; keep both full width. */
+  @media (max-width: 1200.98px) {
+    & [class*="page-layout_dashboard__layout__"] { align-items: stretch; gap: 16px; }
+    & [class*="page-layout_dashboard__layout_right"] { width: 100% !important; }
+  }
+
+  /* Tablet: fixtures first, in a scrollable strip, instead of buried below. */
+  @media (min-width: 768px) and (max-width: 1200.98px) {
+    & [class*="page-layout_dashboard__layout_right"] { order: -1; max-height: 460px; overflow: auto; }
+  }
+
+  /* Wide desktop: tables beside fixtures, fixtures stay in view. */
+  @media (min-width: 1201px) {
+    & [class*="page-layout_dashboard__layout__"] { align-items: flex-start; gap: 16px; }
+    & [class*="page-layout_dashboard__layout_left"] { flex: 1 1 0 !important; }
+    /* overflow:hidden on these would break position:sticky on the fixtures;
+       clip crops the same way without creating a scroll container. */
+    & .main-block__container,
+    & [class*="layout_mainBlockContent"],
+    & [class*="competition-layout_main"] { overflow: clip !important; }
+    & [class*="page-layout_dashboard__layout_right"] {
+      flex: 0 0 clamp(320px, 26%, 460px) !important;
+      width: auto !important;
+      position: sticky;
+      top: 72px;
+      max-height: calc((var(--pg-vh) - 88px) / var(--pg-zoom));
+      overflow: auto;
+    }
+  }
+
+  /* Touch devices: comfortable tap targets. */
+  &[data-pg-input="touch"] [class*="tabs-trigger_button"] { min-height: 44px; }
+  &[data-pg-input="touch"] [class*="aside_selectItem"] a { padding-block: 10px; }
+
+  /* Landscape phones: don't waste height on a sticky header. */
+  @media (max-height: 500px) { & header { position: static !important; } }
+}
+
+/* ===== behaviours driven by content.js (switches are handled in JS) ========= */
+
+/* "Mi equipo" dock: keep page content clear of the handle / open panel. */
+html[data-pg-dock] {
+  padding-right: var(--pg-dock-w, 0px);
+  transition: padding 0.22s ease;
+}
+
+/* Left menu collapse (toggled by the handle in content.js). Below 768px the
+   menu is the off-canvas phone menu, so it is left alone. */
+@media (min-width: 768px) {
+  html[data-pg-left] {
+    padding-left: var(--pg-left-w, 0px);
+    transition: padding 0.22s ease;
+  }
+  html[data-pg-left="collapsed"] [class*="aside_mainBlockAside"] { display: none !important; }
+  /* The site gives the content a fixed ~74% basis; let it take the freed room. */
+  html[data-pg-left="collapsed"] [class*="layout_mainBlockContent"] { flex: 1 1 100% !important; width: 100% !important; }
+}
+
+/* The league title moves into the header strip (content.js) on >= 768px. */
+html[data-pg-strip="on"] [class*="title_block"] { display: none !important; }
+
+/* ===== "Equipos y estadísticas" tab ======================================== */
+/* Team cards (theme), stat cards in columns (layout), bigger crests (crests). */
+html:not([data-pg-off~="theme"]) {
+  & [class*="equipos_items"] { gap: 12px !important; padding: 4px; }
+  & [class*="equipos_block"] {
+    background: var(--pg-surface-2);
+    border: 1px solid var(--pg-line);
+    border-radius: 14px;
+    padding: 14px 8px 10px;
+    transition: transform 0.15s, border-color 0.15s, background 0.15s;
+  }
+  & [class*="equipos_block"]:hover {
+    transform: translateY(-2px);
+    border-color: var(--pg-accent);
+    background: var(--pg-accent-soft);
+  }
+  & [class*="equipos_command"] a { color: var(--pg-text); font-weight: 700; }
+  /* Trophy count: a gold chip instead of a loose icon and number. */
+  & [class*="equipos_label"] { color: #ffc61a; font-weight: 800; }
+  & [class*="stats_item"] {
+    background: var(--pg-surface);
+    border: 1px solid var(--pg-line);
+    border-radius: var(--pg-radius);
+    overflow: hidden;
+  }
+  /* The leader of each ranking stands out. */
+  & [class*="stats_item"] tbody tr:first-child td:last-child { color: var(--pg-accent); font-weight: 800; }
+  & [class*="stats_item"] tbody tr:first-child { background: var(--pg-accent-soft) !important; }
+}
+html:not([data-pg-off~="crests"]) {
+  /* The site fixes the crest wrappers at 32px, so resize the wrappers too. */
+  & [class*="equipos_block"] .participant-league-image,
+  & [class*="equipos_block"] .comand-imageteam {
+    width: 52px !important;
+    height: 52px !important;
+  }
+  & [class*="equipos_block"] img.team {
+    width: 52px !important;
+    height: 52px !important;
+    left: 0 !important;
+    filter: drop-shadow(0 0 1px rgba(255, 255, 255, 0.9)) drop-shadow(0 6px 10px rgba(0, 0, 0, 0.55));
+    transition: transform 0.15s;
+  }
+  & [class*="equipos_block"]:hover img.team { transform: scale(1.12); }
+  & [class*="stats_item"] img[class*="table_table_team_image"] { width: 24px; height: 24px; }
+}
+html:not([data-pg-off~="layout"]) {
+  & [class*="stats_items"] {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr));
+    gap: 16px;
+    align-items: start;
+  }
+}
+html:not([data-pg-off~="highlight"]) {
+  & [class*="equipos_block"].pg-fav-card {
+    border-color: var(--pg-accent);
+    background: var(--pg-accent-soft);
+    box-shadow: 0 0 0 1px var(--pg-accent), 0 0 18px rgba(182, 242, 107, 0.25);
+  }
+}

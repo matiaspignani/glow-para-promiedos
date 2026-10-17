@@ -1,0 +1,205 @@
+{
+  "_meta": {
+    "verified": "2026-10-17",
+    "source": "Links published on each club's official website (header/footer social icons). Clubs whose site lists no social links, or whose site could not be found, are intentionally empty rather than guessed.",
+    "keys": "Promiedos team id. site=official website; ig=Instagram, x=X/Twitter, fb=Facebook, yt=YouTube, tt=TikTok"
+  },
+  "teams": {
+    "igg": {
+      "site": "https://www.bocajuniors.com.ar/",
+      "ig": ["https://www.instagram.com/bocajrs/"],
+      "fb": ["https://www.facebook.com/BocaJuniors"],
+      "x": ["https://x.com/BocaJrsOficial"],
+      "yt": ["https://www.youtube.com/@ElCanaldeBoca"],
+      "tt": ["https://www.tiktok.com/@bocajuniors"]
+    },
+    "igi": {
+      "site": "https://www.riverplate.com/",
+      "ig": ["https://www.instagram.com/riverplate"],
+      "fb": ["https://www.facebook.com/riverplateoficial"],
+      "x": ["https://twitter.com/RiverPlate"],
+      "yt": ["https://www.youtube.com/@riverplate"],
+      "tt": ["https://www.tiktok.com/@riverplate"]
+    },
+    "ihg": {
+      "site": "https://www.racingclub.com.ar/",
+      "ig": ["https://instagram.com/racingclub"],
+      "fb": ["https://www.facebook.com/racingcluboficial"],
+      "x": ["https://twitter.com/racingclub"],
+      "yt": ["https://www.youtube.com/racingcluboficial"]
+    },
+    "ihe": {
+      "site": "https://www.clubaindependiente.com.ar/",
+      "ig": ["https://instagram.com/caindependiente"],
+      "fb": ["https://facebook.com/Independiente"],
+      "x": ["https://twitter.com/Independiente"],
+      "yt": ["https://youtube.com/channel/UCvjX3jBp_iLCZCpKqlXhHDw"]
+    },
+    "igf": {
+      "site": "https://www.sanlorenzo.com.ar/",
+      "ig": ["https://instagram.com/sanlorenzo"],
+      "fb": ["https://facebook.com/sanlorenzo"],
+      "x": ["https://twitter.com/sanlorenzo"],
+      "yt": ["https://youtube.com/sanlorenzo"],
+      "tt": ["https://www.tiktok.com/@sanlorenzo"]
+    },
+    "ihc": {
+      "site": "https://www.velezsarsfield.com.ar/",
+      "ig": ["https://instagram.com/velez"],
+      "fb": ["https://www.facebook.com/velezsarsfield"],
+      "x": ["https://twitter.com/Velez"],
+      "yt": ["https://www.youtube.com/veleztv"],
+      "tt": ["https://www.tiktok.com/@velez"]
+    },
+    "iie": {
+      "site": "https://cahuracan.com/",
+      "ig": ["https://instagram.com/CAHuracan"],
+      "fb": ["https://www.facebook.com/CAHuracan"],
+      "x": ["https://twitter.com/CAHuracan"],
+      "yt": ["https://www.youtube.com/CAHuracan"],
+      "tt": ["https://www.tiktok.com/@cahuracan"]
+    },
+    "ihb": {
+      "site": "https://argentinosjuniors.com.ar/",
+      "ig": ["https://instagram.com/aaajoficial"],
+      "fb": ["https://facebook.com/aaajoficial"],
+      "x": ["https://twitter.com/aaajoficial"],
+      "yt": ["https://youtube.com/aaajoficial"],
+      "tt": ["https://tiktok.com/@aaajoficial"]
+    },
+    "ihf": {
+      "site": "https://rosariocentral.com/",
+      "ig": ["https://www.instagram.com/rosariocentral"],
+      "fb": ["https://www.facebook.com/rosariocentral"],
+      "x": ["https://twitter.com/rosariocentral"],
+      "yt": ["https://www.youtube.com/c/RosarioCentral"]
+    },
+    "ihh": {
+      "site": "https://www.newellsoldboys.com.ar/"
+    },
+    "igh": {
+      "site": "https://estudiantesdelaplata.com/",
+      "ig": ["https://www.instagram.com/edelp.club/", "https://www.instagram.com/edelpoficial/"],
+      "fb": ["https://www.facebook.com/EdelpOficial/"],
+      "x": ["https://x.com/edelpclub", "https://x.com/EdelpOficial"],
+      "tt": ["https://www.tiktok.com/@edelpoficial"]
+    },
+    "iia": {
+      "site": "https://www.gimnasia.org.ar/",
+      "ig": ["https://www.instagram.com/gimnasia_oficial/"],
+      "fb": ["https://www.facebook.com/gimnasiaoficial/"],
+      "x": ["https://twitter.com/gimnasiaoficial"],
+      "yt": ["https://www.youtube.com/channel/UCd27YrUjO-Te4o6569xpyJw"]
+    },
+    "igj": {
+      "site": "https://clublanus.com/",
+      "ig": ["https://www.instagram.com/clublanusoficial/"],
+      "fb": ["https://www.facebook.com/clublanusoficial/"],
+      "x": ["https://x.com/clublanus"],
+      "yt": ["https://www.youtube.com/@clublanusoficial"],
+      "tt": ["https://www.tiktok.com/@clublanusoficial"]
+    },
+    "ihi": {
+      "site": "https://clubabanfield.org/",
+      "ig": ["https://www.instagram.com/cab_oficial/"],
+      "fb": ["https://www.facebook.com/pages/Club-Atl%C3%A9tico-Banfield-Oficial/330848370335987"],
+      "x": ["https://twitter.com/CAB_oficial"]
+    },
+    "iid": {
+      "site": "https://catigre.com.ar/",
+      "ig": ["https://www.instagram.com/catigreoficial/"],
+      "x": ["https://twitter.com/catigreoficial"],
+      "yt": ["https://www.youtube.com/c/ClubATigre"]
+    },
+    "hcah": {
+      "site": "https://cap.org.ar/",
+      "ig": ["https://www.instagram.com/caplatense"],
+      "fb": ["https://www.facebook.com/caplatense"],
+      "x": ["https://x.com/caplatense"],
+      "yt": ["https://www.youtube.com/CAPlatenseTV"],
+      "tt": ["https://www.tiktok.com/@caplatense"]
+    },
+    "hcag": {
+      "site": "https://www.clubaunion.com.ar/",
+      "ig": ["https://www.instagram.com/clubaunion/"],
+      "fb": ["https://www.facebook.com/clubaunion"],
+      "x": ["https://twitter.com/clubaunion"],
+      "yt": ["https://www.youtube.com/user/PrensaClubUnion"]
+    },
+    "hcbh": {
+      "site": "https://www.defensayjusticia.org.ar/",
+      "ig": ["https://www.instagram.com/defensayjusticiaoficial/"],
+      "fb": ["https://www.facebook.com/ClubDefensayJus"],
+      "x": ["https://twitter.com/ClubDefensayJus"],
+      "yt": ["https://www.youtube.com/channel/UCX_njUpZVQzU-dyI7MpMruA"],
+      "tt": ["https://www.tiktok.com/@defensayjusticiaoficial"]
+    },
+    "hchc": {
+      "site": "https://institutoacc.com.ar/",
+      "fb": ["https://www.facebook.com/InstitutoACC"],
+      "yt": ["https://www.youtube.com/channel/UCvv_C1t_9MO0i2uFnQUdRKQ"]
+    },
+    "jche": {
+      "site": "https://www.clubtalleres.com.ar/",
+      "fb": ["https://www.facebook.com/CATalleres"],
+      "x": ["https://x.com/catalleresdecba"]
+    },
+    "fhid": {
+      "site": "https://belgrano.com.ar/",
+      "ig": ["https://www.instagram.com/clubatleticobelgrano/"],
+      "x": ["https://x.com/Belgrano"],
+      "yt": ["https://www.youtube.com/channel/UCiDuKICUFaGH8RLPH81PcgA"],
+      "tt": ["https://www.tiktok.com/@clubatleticobelgrano"]
+    },
+    "gbfc": {
+      "site": "https://www.clubatleticotucuman.com.ar/",
+      "ig": ["https://www.instagram.com/atleticotucuman/"],
+      "fb": ["https://www.facebook.com/atleticotucuman/"],
+      "x": ["https://twitter.com/ATOficial"],
+      "yt": ["https://www.youtube.com/atleticotucuman"]
+    },
+    "hcch": {
+      "site": "https://independienterivadavia.com.ar/",
+      "ig": ["https://www.instagram.com/csir.oficial/"],
+      "fb": ["https://www.facebook.com/CSIRoficial"],
+      "x": ["https://twitter.com/csiroficial"],
+      "tt": ["https://www.tiktok.com/@csiroficial"]
+    },
+    "bbjbf": {
+      "site": "https://gimnasiayesgrimamza.com.ar/",
+      "ig": ["https://www.instagram.com/gimnasiamzaoficial/"],
+      "fb": ["https://www.facebook.com/GimnasiaMendozaOK/"],
+      "x": ["https://x.com/gimnasiamendoza"],
+      "yt": ["https://www.youtube.com/channel/UCiO4QPnKra8XBWubQSzf_QA"]
+    },
+    "hbbh": {
+      "site": "https://clubatleticosarmiento.com/",
+      "x": ["https://twitter.com/CASarmientoOf"]
+    },
+    "jafb": {
+      "site": "https://www.barracascentral.com/",
+      "ig": ["https://www.instagram.com/barracascentral_oficial/"],
+      "fb": ["https://www.facebook.com/BarracasCentralfanpage/"],
+      "x": ["https://x.com/barracascentral"],
+      "yt": ["https://www.youtube.com/channel/UCak_9DLjaVDlhafR1lbKS7w"]
+    },
+    "hccd": {
+      "site": "https://aldosivi.com/",
+      "ig": ["https://www.instagram.com/aldosivi_oficial/"],
+      "fb": ["https://www.facebook.com/ClubAtleticoAldosivi"],
+      "x": ["https://twitter.com/clubaldosivi"],
+      "yt": ["https://www.youtube.com/channel/UC3KgCyfrHSjDd6Cq1tar_ZQ"]
+    },
+    "beafh": {
+      "site": "https://www.cacentralcordoba.com/",
+      "ig": ["https://www.instagram.com/cacc.sde"],
+      "fb": ["https://www.facebook.com/cacc.sde"],
+      "x": ["https://x.com/cacc_sde"],
+      "yt": ["https://www.youtube.com/@centralcordoba"]
+    },
+    "bbjea": {
+      "site": "https://deportivoriestra.com.ar/"
+    },
+    "bheaf": {}
+  }
+}
