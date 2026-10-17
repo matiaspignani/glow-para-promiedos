@@ -28,7 +28,7 @@ Sincronizado (chrome.storage.sync, con interruptor `pgSyncOn`): `pgFavTeam`, `pg
 - Sin publicidad inyectada en el sitio ajeno (política de la Chrome Web Store). Donaciones: alias de Mercado Pago en `DONATE` de `content.js`.
 
 ## Pendiente
-1. Cargar el correo de contacto real en `store/privacy.html` y `store/PRIVACY.md` (hoy dice `TU-CORREO@EJEMPLO.COM`).
-2. Publicar la política en una URL pública (GitHub Pages) y pegarla en la pestaña Privacidad de la Chrome Web Store.
+1. ~~Correo de contacto~~ — hecho (matiaspignani@gmail.com).
+2. Política publicada en https://matiaspignani.github.io/glow-para-promiedos/ (desde `docs/index.html`, copia de `store/privacy.html`; mantenerlas iguales). Falta pegarla en la pestaña Privacidad de la Chrome Web Store.
 3. Subir `dist/glow-para-promiedos-<versión>.zip` y completar la ficha con `store/LISTING.md` (empezar con visibilidad "No listada").
 4. La cuenta de desarrollador ya declaró su condición de comerciante/no comerciante; si se agrega cobro (versión Pro), revisarla antes de cobrar.
