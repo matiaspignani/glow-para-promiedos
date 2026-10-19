@@ -1356,7 +1356,7 @@
         el("div", { class: "wperks" }, [
           el("span", { text: "⭐ Tu club en la barra" }),
           el("span", { text: "📊 Estadísticas y noticias" }),
-          el("span", { text: "🌙 Tema oscuro, sin publicidad" }),
+          el("span", { text: "🌙 Tema oscuro" }),
         ]),
         el("div", { class: "wnav one" }, [primary("Empezar", go(1))]),
       ];
