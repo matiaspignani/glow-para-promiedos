@@ -179,7 +179,9 @@ const scenarios = {
       if (!box) return null;
       const btns = [...box.querySelectorAll('.copy')].map((b) => b.innerText);
       const first = box.querySelector('.copy'); first.click();
-      return new Promise((r) => setTimeout(() => r({ text: box.innerText.replace(/\\n/g, ' | '), btns, afterClick: first.innerText }), 300));`);
+      const link = box.querySelector('a.coffeelink');
+      return new Promise((r) => setTimeout(() => r({ text: box.innerText.replace(/\\n/g, ' | '), btns, afterClick: first.innerText,
+        link: link ? { href: link.href, target: link.target, rel: link.rel } : null }), 300));`);
     await sleep(300);
     const file = await shot("05-cafe");
     await shadow("sh.querySelector('.spop .link').click(); return 1");
