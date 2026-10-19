@@ -58,6 +58,19 @@ jobs:
           unzip -l "$ZIP"
           echo "ZIP=$ZIP" >> "$GITHUB_ENV"
 
+      - name: Check Chrome Web Store credentials (read-only)
+        if: env.DRY_RUN == 'true'
+        env:
+          CWS_SERVICE_ACCOUNT_JSON: ${{ secrets.CWS_SERVICE_ACCOUNT_JSON }}
+          CWS_PUBLISHER_ID: ${{ secrets.CWS_PUBLISHER_ID }}
+          CWS_EXTENSION_ID: ${{ secrets.CWS_EXTENSION_ID }}
+        run: |
+          if [ -z "$CWS_SERVICE_ACCOUNT_JSON" ] || [ -z "$CWS_PUBLISHER_ID" ] || [ -z "$CWS_EXTENSION_ID" ]; then
+            echo "CWS secrets are not set; skipping the credentials check."
+          else
+            node tools/cws-publish.mjs --check
+          fi
+
       - name: Publish to the Chrome Web Store
         if: env.DRY_RUN != 'true'
         env:

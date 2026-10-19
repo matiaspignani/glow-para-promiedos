@@ -17,7 +17,7 @@ El workflow verifica que el tag sea `v` + la versión de `manifest.json`, arma `
 
 ## Probar sin publicar (dry run)
 
-En GitHub: **Actions → Release → Run workflow**, con `dry_run` en `true` (es el valor por defecto). Arma y valida el zip, pero no sube nada ni crea el release.
+En GitHub: **Actions → Release → Run workflow**, con `dry_run` en `true` (es el valor por defecto). Arma y valida el zip y, si los tres secretos existen, comprueba las credenciales con una consulta de solo lectura (`node tools/cws-publish.mjs --check`). No sube nada ni crea el release.
 
 ## Secretos necesarios
 
