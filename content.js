@@ -5,7 +5,7 @@
   // "Invitame un café" in the settings: a Mercado Pago alias/CVU to copy (nothing is
   // sent anywhere, the user pastes it in their own banking app). `url` is optional
   // (an https payment link); with neither alias nor url the whole box stays hidden.
-  const DONATE = { service: "Mercado Pago", alias: "tecrosario.mp", cvu: "0000003100068381232078", url: "" };
+  const DONATE = { service: "Mercado Pago", alias: "tecrosario.mp", cvu: "0000003100068381232078", url: "https://cafecito.app/tecrosario" };
 
   const STORE_KEY = "pgFavTeam"; // main team, used in every league it plays in
   const LEAGUE_KEY = "pgLeagueFavs"; // { [leagueId]: team } club chosen for one specific league
