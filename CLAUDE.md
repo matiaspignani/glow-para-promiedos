@@ -30,5 +30,5 @@ Sincronizado (chrome.storage.sync, con interruptor `pgSyncOn`): `pgFavTeam`, `pg
 ## Pendiente
 1. ~~Correo de contacto~~ — hecho (matiaspignani@gmail.com).
 2. Política publicada en https://matiaspignani.github.io/glow-para-promiedos/ (desde `docs/index.html`, copia de `store/privacy.html`; mantenerlas iguales). Falta pegarla en la pestaña Privacidad de la Chrome Web Store.
-3. Subir `dist/glow-para-promiedos-<versión>.zip` y completar la ficha con `store/LISTING.md` (empezar con visibilidad "No listada").
+3. Primera versión ya publicada a mano. Las siguientes salen con `git tag vX.Y.Z` + `git push --tags` (ver `RELEASING.md`; workflow `.github/workflows/release.yml`, script `tools/cws-publish.mjs`). Falta que el usuario cargue los secretos `CWS_SERVICE_ACCOUNT_JSON`, `CWS_PUBLISHER_ID` y `CWS_EXTENSION_ID` y autorice la cuenta de servicio en el Developer Dashboard; probar antes con el dry run (workflow_dispatch).
 4. La cuenta de desarrollador ya declaró su condición de comerciante/no comerciante; si se agrega cobro (versión Pro), revisarla antes de cobrar.
