@@ -139,6 +139,39 @@ const scenarios = {
     await shadow("sh.querySelector('.spop .link').click(); return 1");
     return out;
   },
+  async welcome() {
+    await go(`${BASE}/league/liga-profesional/hc`, 1500);
+    await clearAll();
+    await go(`${BASE}/league/liga-profesional/hc`);
+    const click = (sel, text) => shadow(`const els = [...sh.querySelectorAll(${JSON.stringify(sel)})]; const b = els.find(e => !${JSON.stringify(text || "")} || e.innerText.includes(${JSON.stringify(text || "")})); if (!b) return 'MISSING ' + ${JSON.stringify(sel + " " + (text || ""))}; b.click(); return 'ok'`);
+    const out = { visible: await shadow("return !sh.querySelector('.wback').hidden"), dock: await shadow("return sh.querySelector('.dock').dataset.open") };
+    out.s0 = await shadow("return sh.querySelector('.wcard').innerText.replace(/\\n/g,' | ')");
+    await shot("w0-bienvenida");
+    out.c0 = await click(".wbtn.primary", "Empezar"); await sleep(400);
+    out.s1 = await shadow("return sh.querySelector('.wcard h2').innerText + ' / teams=' + sh.querySelectorAll('.wteam').length + ' / nextDisabled=' + sh.querySelector('.wbtn.primary').disabled");
+    out.pickBoca = await click(".wteam", "Boca"); await sleep(300);
+    out.s1b = await shadow("return 'nextDisabled=' + sh.querySelector('.wbtn.primary').disabled + ' on=' + sh.querySelector('.wteam.on')?.innerText");
+    await shot("w1-hincha");
+    out.c1 = await click(".wbtn.primary", "Siguiente"); await sleep(400);
+    out.s2 = await shadow("return sh.querySelector('.wcard h2').innerText + ' / teams=' + sh.querySelectorAll('.wteam').length + ' / hasBoca=' + [...sh.querySelectorAll('.wteam')].some(b => b.innerText.includes('Boca'))");
+    out.pickRiver = await click(".wteam", "River"); await sleep(300);
+    await shot("w2-simpatizante");
+    out.c2 = await click(".wbtn.primary", "Listo"); await sleep(1200);
+    out.s3 = await shadow("return sh.querySelector('.wcard h2').innerText");
+    await shot("w3-listo");
+    out.c3 = await click(".wbtn.primary", "Ver mi equipo"); await sleep(1500);
+    out.after = {
+      wbackHidden: await shadow("return sh.querySelector('.wback').hidden"),
+      crests: await shadow("return [...sh.querySelectorAll('.hcrest')].map(b => b.title + (b.classList.contains('on') ? ' *on' : ''))"),
+      pill: await shadow("return sh.querySelector('.hteam').innerText.replace(/\\n/g,' / ')"),
+      dock: await shadow("return sh.querySelector('.dock').dataset.open"),
+    };
+    out.shot = await shot("w4-resultado");
+    // It must not come back on reload
+    await go(`${BASE}/league/liga-profesional/hc`);
+    out.reload = { welcomeAgain: await shadow("return !sh.querySelector('.wback').hidden") };
+    return out;
+  },
   async coffee() {
     await shadow("sh.querySelector('.hgear').click(); return 1");
     await sleep(500);
