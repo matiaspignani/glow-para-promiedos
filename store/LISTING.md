@@ -7,7 +7,7 @@
 | Campo | Valor |
 |---|---|
 | Nombre | Glow para Promiedos |
-| Resumen (≤132) | Mejoras no oficiales para Promiedos: tema oscuro, tus clubes en la barra, estadísticas, noticias y sin publicidad. |
+| Resumen (≤132) | Mejoras no oficiales para Promiedos: tema oscuro, tus clubes en la barra, estadísticas y noticias de tu equipo. |
 | Idioma | Español |
 | Categoría sugerida | Entretenimiento / Diversión (elegí la que ofrezca el panel; no hay una de deportes específica) |
 | Política de privacidad | URL pública de `PRIVACY.md` (ver "Antes de enviar") |
@@ -24,12 +24,11 @@ Glow para Promiedos es una extensión **no oficial** que rediseña la experienci
 • Panel "Mi equipo": posición, puntos, goles, efectividad, líderes de la tabla, tus jugadores en los rankings, noticias de la semana y redes oficiales del club (Liga Profesional y Primera Nacional).
 • Elegí un club distinto para cada liga: la extensión te lo pregunta y lo recuerda.
 • Pestaña "Equipos y estadísticas" con tarjetas y escudos más grandes.
-• Oculta los banners publicitarios del sitio.
 • Se adapta a tu pantalla: tablas en columnas, partidos siempre a la vista y menú izquierdo minimizable.
 • Bienvenida guiada la primera vez: elegís tu club de hincha y, si querés, un simpatizante.
 • Cada mejora se prende y se apaga con un interruptor (⚙).
 • Tus preferencias se guardan en tu cuenta de Google (sincronización de Chrome), si querés.
-• Un botón opcional "Invitame un café" en los ajustes, que abre la página de Cafecito del autor (o permite copiar un alias de Mercado Pago), para quien quiera apoyar el desarrollo. No hay publicidad ni funciones pagas.
+• Un botón opcional "Invitame un café" en los ajustes, que abre la página de Cafecito del autor (o permite copiar un alias de Mercado Pago), para quien quiera apoyar el desarrollo. No hay funciones pagas.
 
 No recopilamos datos personales. Las noticias se piden a Google Noticias con el nombre del club que elegiste.
 
