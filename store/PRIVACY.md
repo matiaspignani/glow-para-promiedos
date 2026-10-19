@@ -27,7 +27,7 @@ Los desarrolladores de esta extensión **no tienen acceso** a esas preferencias.
 - **Noticias del club:** para mostrar notas recientes, la extensión consulta el feed público de Google Noticias (`news.google.com`) con el **nombre del club** que elegiste. No se envía ningún otro dato. Se aplica la política de privacidad de Google. Podés apagar esta función con el interruptor "Noticias del club".
 - **Escudos y logos:** el navegador los carga desde `api.promiedos.com.ar`, igual que lo hace el propio sitio.
 - **Redes sociales de los clubes:** son enlaces; no se contacta a esos sitios hasta que hacés clic.
-- **Botón "Invitame un café":** muestra un alias y un CVU de Mercado Pago que podés copiar al portapapeles con un clic. La extensión no procesa pagos ni envía nada: la transferencia, si decidís hacerla, la hacés vos desde tu app bancaria.
+- **Botón "Invitame un café":** abre la página de Cafecito del autor (`cafecito.app`) solo si hacés clic, y muestra un alias y un CVU de Mercado Pago que podés copiar al portapapeles. La extensión no procesa pagos ni envía nada: si decidís apoyar, el pago lo gestiona Cafecito o tu app bancaria, con sus propias políticas.
 
 La extensión **lee el contenido de las páginas de promiedos.com.ar** que visitás (tablas, equipos, partidos) solo para mostrarlo de otra forma en tu pantalla. Esa información no sale de tu navegador, salvo el nombre del club para las noticias, como se explicó arriba.
 
