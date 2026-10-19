@@ -11,6 +11,13 @@ Extensión de Chrome (Manifest V3, sin build) que mejora promiedos.com.ar: tema 
 - `socials.json` — redes oficiales verificadas en el sitio de cada club (clave = id de equipo de Promiedos). No agregar cuentas sin verificarlas en el sitio oficial.
 - `store/` — ficha (`LISTING.md`), política (`PRIVACY.md`, `privacy.html`), capturas y tile. `dist/` — zip para la tienda. `tools/` — pruebas.
 
+## Próximo partido, en vivo e historial (0.7.0)
+- `content.js` pide la página del equipo (`/team/<slug>/<id>`, mismo origen) para el próximo partido, la cuenta regresiva y los últimos resultados; el chip `.mpill` va en la barra de ligas y flota en el resto de las páginas. Funciona sin datos de liga (home, equipo, partido).
+- El sitio es una SPA: un vigía de URL (`onRoute`) vuelve a pedir los datos al cambiar de página, porque `__NEXT_DATA__` queda viejo.
+- "Solo en vivo": marca con `.pg-nolive` las filas sin `[class*="time_live"]` y oculta los bloques vacíos.
+- Historial: en `/game/<slug>/<id>` los datos `head_to_head`, `recent_form` y `game_info` siguen en `initialData.game`. Forma: 1 = V, 2 = E, 0 = D (más reciente primero). Horarios en hora argentina (UTC-3).
+- Pruebas nuevas en `tools/cdp.mjs`: `home`, `game`, `route`.
+
 ## Datos
 Promiedos es Next.js: los datos salen del `<script id="__NEXT_DATA__">` de cada página. Páginas de liga: `/league/<slug>/<id>` (tablas) y `/league/<slug>/<id>/equipos` (equipos y estadísticas, sin tablas).
 
