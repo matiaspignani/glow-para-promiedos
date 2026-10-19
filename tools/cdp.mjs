@@ -232,6 +232,80 @@ const scenarios = {
       pill: await shadow("return sh.querySelector('.hteam').innerText.replace(/\\n/g,' / ')"),
     };
   },
+  // Home page: the club's next match (chip + panel) and the live-only filter.
+  async home() {
+    await go(`${BASE}/league/liga-profesional/hc`, 1500);
+    await clearAll();
+    await seed({ pgFavTeam: BOCA });
+    await seed({ pgOnboarded: true, pgDockOpen: true }, "local");
+    await go(`${BASE}/`, 6000);
+    const out = {
+      pill: await shadow("const p = sh.querySelector('.mpill'); return p ? [p.hidden, p.className, p.innerText.replace(/\\n/g,' / ')] : null"),
+      panel: await shadow("return sh.querySelector('.hero')?.innerText.replace(/\\n/g,' / ')"),
+      card: await shadow("return sh.querySelector('.gcard')?.innerText.replace(/\\n/g,' / ') || null"),
+      last: await shadow("return [...sh.querySelectorAll('.mbox .rrow')].map(r => r.innerText.replace(/\\n/g,' ')).slice(0, 8)"),
+      strip: await ev("document.documentElement.dataset.pgStrip"),
+    };
+    out.shot = await shot("10-home");
+    const total = await ev("document.querySelectorAll('a[href^=\"/game/\"]').length");
+    await shadow("sh.querySelector('.livebtn').click(); return 1");
+    await sleep(500);
+    out.live = {
+      total,
+      btn: await shadow("return sh.querySelector('.livebtn').innerText"),
+      visible: await ev("[...document.querySelectorAll('a[href^=\"/game/\"]')].filter(a => a.offsetParent !== null).length"),
+      liveRows: await ev("[...document.querySelectorAll('a[href^=\"/game/\"]')].filter(a => a.querySelector('[class*=\"time_live\"]')).length"),
+    };
+    out.liveShot = await shot("11-home-live");
+    return out;
+  },
+  // Panel closed: the chip floats on the home page, sits in the top bar on a league,
+  // and a client-side navigation to a match loads its history without a reload.
+  async route() {
+    await go(`${BASE}/league/liga-profesional/hc`, 1500);
+    await clearAll();
+    await seed({ pgFavTeam: BOCA });
+    await seed({ pgOnboarded: true, pgDockOpen: false, pgFocus: "igg" }, "local");
+    await go(`${BASE}/`, 6000);
+    const out = { homePill: await shadow("const p = sh.querySelector('.mpill'); return [p.hidden, p.className, p.parentNode === sh, p.innerText.replace(/\\n/g,' / ')]") };
+    out.homeShot = await shot("13-home-closed");
+    await ev("document.querySelector('a[href=\"/league/liga-profesional/hc\"]').click()");
+    await sleep(4000);
+    out.league = {
+      path: await ev("location.pathname"),
+      strip: await ev("document.documentElement.dataset.pgStrip"),
+      inBar: await shadow("const p = sh.querySelector('.mpill'); return [p.hidden, p.className, !!p.closest('.hmine')]"),
+    };
+    out.leagueShot = await shot("14-league-bar");
+    await ev("history.back()");
+    await sleep(3000);
+    await ev("document.querySelector('a[href^=\"/game/\"]').click()");
+    await sleep(4500);
+    out.game = {
+      path: await ev("location.pathname"),
+      hist: !!(await shadow("return sh.querySelector('.hist')")),
+      btn: await shadow("const b = sh.querySelector('.histbtn'); return [b.hidden, b.innerText]"),
+    };
+    out.gameShot = await shot("15-spa-game");
+    return out;
+  },
+  // Match page: history section from the page data.
+  async game() {
+    await go(`${BASE}/league/liga-profesional/hc`, 1500);
+    await clearAll();
+    await seed({ pgFavTeam: BOCA });
+    await seed({ pgOnboarded: true, pgDockOpen: true }, "local");
+    await go(`${BASE}/game/river-plate-vs-boca-juniors/egdbgbi`, 6000);
+    const out = {
+      hist: await shadow("return sh.querySelector('.hist')?.innerText.replace(/\\n/g,' / ') || null"),
+      tv: await shadow("return sh.querySelector('.tvline')?.innerText || null"),
+      form: await shadow("return [...sh.querySelectorAll('.frow')].map(r => r.innerText.replace(/\\n/g,' '))"),
+      h2h: await shadow("return [...sh.querySelectorAll('.hist .rrow')].map(r => r.innerText.replace(/\\n/g,' '))"),
+      pill: await shadow("const p = sh.querySelector('.mpill'); return p ? [p.hidden, p.innerText.replace(/\\n/g,' / ')] : null"),
+    };
+    out.shot = await shot("12-game");
+    return out;
+  },
   async icons() {
     const sizes = [16, 32, 48, 128];
     const draw = `(size) => { const c = document.createElement('canvas'); c.width = c.height = size; const g = c.getContext('2d');
