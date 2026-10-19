@@ -127,8 +127,21 @@ Consejos: grabar en pantalla completa a 1080p, cursor visible, subtítulos grand
 4. Decidir una mejora y, si es chica, publicarla: `git tag vX.Y.Z` + `git push --tags` (ver `RELEASING.md`).
 5. Publicar una novedad corta ("Ahora también …").
 
-## 10. Qué puedo preparar yo
+## 10. Piezas gráficas listas (`store/social/`)
 
-- Las capturas "antes y después" y los GIF de bienvenida.
+| Archivo | Para qué |
+|---|---|
+| `antes-despues-ig-1080x1350.png` | Post de Instagram o Facebook (4:5) |
+| `antes-despues-story-1080x1920.png` | Historias, Reels (portada) y TikTok (9:16) |
+| `antes-despues-x-1600x900.png` | X (Twitter) y LinkedIn (16:9) |
+| `antes.png` y `despues.png` | Imágenes sueltas, 1600 px de ancho, para armar tus propios posts |
+| `bienvenida.gif` | La bienvenida de primera vez, paso a paso (12 s) |
+| `panel.gif` | El panel de tu club: estadísticas, noticias, redes y ajustes (11 s) |
+
+Se regeneran con `tools/media.mjs` (captura con la extensión real en Edge) y `tools/make-social.py` (arma las imágenes y los GIF; necesita ffmpeg y Pillow). La imagen "antes" oculta el banner publicitario de terceros del sitio a propósito, para no mostrar publicidad de apuestas en tus publicaciones.
+
+## 11. Qué puedo preparar yo
+
 - Un post de ejemplo personalizado por club (para la Semana 2).
 - Una página simple en GitHub Pages con la descripción y el botón de instalación.
+- Versiones de los GIF en MP4 vertical para Reels y TikTok.
