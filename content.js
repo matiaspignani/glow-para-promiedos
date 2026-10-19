@@ -325,11 +325,57 @@
     .sstate.on { color: #b6f26b; }
     .sstate.off { color: #8aa399; }
     .sfoot { display: flex; justify-content: space-between; margin-top: 10px; }
+    /* Welcome (first run) */
+    .wback { position: fixed; inset: 0; z-index: 2147483700; display: grid; place-items: center; padding: 16px;
+      background: radial-gradient(900px 500px at 50% 0%, rgba(182,242,107,.14), transparent 60%), rgba(3,10,7,.82);
+      backdrop-filter: blur(4px); }
+    .wback[hidden] { display: none; }
+    .wcard { position: relative; width: min(640px, 100%); max-height: calc(100vh - 32px); overflow: auto; padding: 32px 28px 22px;
+      text-align: center; color: #e8f1ec; background: linear-gradient(180deg, #14301f, #0a1a12);
+      border: 1px solid rgba(182,242,107,.4); border-radius: 24px; box-shadow: 0 30px 90px rgba(0,0,0,.7);
+      animation: wpop .35s ease both; scrollbar-width: thin; }
+    @keyframes wpop { from { opacity: 0; transform: translateY(14px) scale(.98); } }
+    @media (prefers-reduced-motion: reduce) { .wcard { animation: none; } }
+    .wskip { position: absolute; top: 14px; right: 18px; }
+    .wcard h2 { margin: 6px 0 6px; font-size: 24px; letter-spacing: -.01em; }
+    .wlead { margin: 0 auto 16px; max-width: 480px; color: #c5d6cc; font-size: 14px; line-height: 1.5; }
+    .whint { margin: 10px 0 0; color: #8aa399; font-size: 12px; }
+    .wlogo { width: 76px; height: 76px; margin: 0 auto 10px; border-radius: 22px; display: grid; place-items: center;
+      font-size: 44px; font-weight: 800; color: #b6f26b; border: 5px solid #b6f26b; box-shadow: 0 0 30px rgba(182,242,107,.35); }
+    .wperks { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 4px 0 22px; }
+    .wperks span { padding: 7px 14px; border-radius: 999px; background: rgba(182,242,107,.12); border: 1px solid rgba(182,242,107,.3);
+      font-size: 13px; font-weight: 600; }
+    .wpicker input { margin-bottom: 10px; }
+    .wgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 10px; max-height: 300px; overflow: auto;
+      padding: 4px; scrollbar-width: thin; }
+    .wteam { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 12px 6px 9px; cursor: pointer; color: #e8f1ec;
+      background: #0e211a; border: 2px solid rgba(255,255,255,.08); border-radius: 14px; font-size: 12px; font-weight: 600;
+      transition: transform .15s, border-color .15s, background .15s; }
+    .wteam[hidden] { display: none; }
+    .wteam img { width: 46px; height: 46px; object-fit: contain;
+      filter: drop-shadow(0 0 .6px rgba(255,255,255,.9)) drop-shadow(0 2px 4px rgba(0,0,0,.5)); }
+    .wteam:hover { transform: translateY(-2px); border-color: rgba(182,242,107,.6); }
+    .wteam.on { border-color: #b6f26b; background: rgba(182,242,107,.16); box-shadow: 0 0 0 3px rgba(182,242,107,.25); }
+    .wnav { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 18px; }
+    .wnav.one { justify-content: center; }
+    .wbtn { padding: 11px 22px; border-radius: 999px; cursor: pointer; font-weight: 800; font-size: 14px; color: #b6f26b;
+      background: transparent; border: 1px solid rgba(182,242,107,.5); }
+    .wbtn.primary { background: #b6f26b; color: #07130e; border-color: #b6f26b; }
+    .wbtn:disabled { opacity: .35; cursor: not-allowed; }
+    .wdots { display: flex; justify-content: center; gap: 7px; margin-top: 16px; }
+    .wdots i { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,.2); }
+    .wdots i.on { background: #b6f26b; width: 22px; border-radius: 6px; }
+    .wcrests { display: flex; justify-content: center; align-items: flex-end; gap: 14px; margin-bottom: 6px; }
+    .wcrests img { width: 56px; height: 56px; object-fit: contain; opacity: .9;
+      filter: drop-shadow(0 0 1px rgba(255,255,255,.9)) drop-shadow(0 6px 10px rgba(0,0,0,.5)); }
+    .wcrests img.big { width: 110px; height: 110px; opacity: 1; }
     .coffeebox { display: flex; flex-direction: column; align-items: center; gap: 6px; margin-top: 12px; padding-top: 12px;
       border-top: 1px solid rgba(255,255,255,.07); }
     .coffeebox small { color: #8aa399; font-size: 11px; text-align: center; }
     .coffeetitle { display: inline-block; padding: 8px 18px; border-radius: 999px; background: #ffc61a; color: #07130e;
       font-weight: 800; font-size: 13px; box-shadow: 0 4px 14px rgba(255,198,26,.25); }
+    a.coffeelink { text-decoration: none; cursor: pointer; transition: filter .15s, transform .15s; }
+    a.coffeelink:hover { filter: brightness(1.08); transform: translateY(-1px); }
     .coffeeacc { font-size: 12px; color: #c5d6cc; }
     .coffeeacc code { padding: 2px 8px; border-radius: 6px; background: #12291f; color: #ffc61a; font-weight: 700; user-select: all; }
     .coffeebtns { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
@@ -477,6 +523,11 @@
     if (focused) {
       state.fav = focused;
       state.favSource = focused.kind;
+    } else if (mainPlays) {
+      // The main club plays here: it stays the active one even if a "simpatizante"
+      // was also picked in this league (that one is reachable from its crest).
+      state.fav = state.main;
+      state.favSource = "main";
     } else if (leagueFav?.id) {
       state.fav = leagueFav;
       state.favSource = "league";
@@ -527,7 +578,8 @@
     // corner so the switches are always reachable.
     sgear = el("button", { class: "sgear", title: "Ajustes de mejoras", "aria-label": "Ajustes de mejoras", text: "⚙", onclick: toggleSettings });
     spop = el("div", { class: "spop", role: "dialog", "aria-label": "Ajustes de mejoras", hidden: "" });
-    shadow.append(el("style", { text: CSS }), dock, lhandle, hstrip, sgear, spop);
+    wback = el("div", { class: "wback", hidden: "" });
+    shadow.append(el("style", { text: CSS }), dock, lhandle, hstrip, sgear, spop, wback);
 
     document.documentElement.append(host);
     renderDisplayInfo(window.__pgLayout);
@@ -539,7 +591,8 @@
     });
     // Close the settings with Escape or a click anywhere outside the extension UI.
     document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && !spop.hidden) spop.hidden = true;
+      if (e.key === "Escape" && !wback.hidden) closeOnboarding({ openPanel: !state.main });
+      else if (e.key === "Escape" && !spop.hidden) spop.hidden = true;
     });
     document.addEventListener("mousedown", (e) => {
       if (!spop.hidden && !e.composedPath().includes(host)) spop.hidden = true;
@@ -776,14 +829,23 @@
       b.addEventListener("click", () => copyWithFeedback(b, value, done));
       return b;
     };
+    // With a payment link the whole yellow button is one click; the alias/CVU copy
+    // buttons stay below as the alternative for people who prefer to transfer.
+    const title = hasUrl
+      ? el("a", { class: "coffeetitle coffeelink", href: DONATE.url, target: "_blank", rel: "noopener noreferrer", text: "☕ Invitame un café" })
+      : el("b", { class: "coffeetitle", text: "☕ Invitame un café" });
     return el("div", { class: "coffeebox" }, [
-      el("b", { class: "coffeetitle", text: "☕ Invitame un café" }),
+      title,
       el("small", { text: "Si la extensión te sirve, podés apoyar su desarrollo. Es opcional." }),
-      DONATE.alias ? el("div", { class: "coffeeacc" }, [el("span", { text: `${DONATE.service} · alias ` }), el("code", { text: DONATE.alias })]) : null,
+      DONATE.alias
+        ? el("div", { class: "coffeeacc" }, [
+            el("span", { text: `${hasUrl ? "O transferí por " : ""}${DONATE.service} · alias ` }),
+            el("code", { text: DONATE.alias }),
+          ])
+        : null,
       el("div", { class: "coffeebtns" }, [
         DONATE.alias ? copyBtn("Copiar alias", DONATE.alias, "¡Alias copiado!") : null,
         DONATE.cvu ? copyBtn("Copiar CVU", DONATE.cvu, "¡CVU copiado!") : null,
-        hasUrl ? el("a", { class: "copy", href: DONATE.url, target: "_blank", rel: "noopener noreferrer", text: "Abrir enlace de pago" }) : null,
       ]),
     ]);
   }
@@ -843,6 +905,9 @@
       el("ul", { class: "slist" }, FEATURES.map(row)),
       el("div", { class: "sfoot" }, [
         el("button", { class: "link", text: "Activar todas", onclick: () => setAllFeatures(true) }),
+        state.model?.teams.size
+          ? el("button", { class: "link", text: "Ver bienvenida", onclick: () => ((spop.hidden = true), startOnboarding()) })
+          : null,
         el("button", { class: "link", text: "Desactivar todas", onclick: () => setAllFeatures(false) }),
       ]),
       coffeeBox(),
@@ -1131,12 +1196,15 @@
     };
   }
 
-  function selectTeam(team) {
+  // role: "hincha" sets the main club, "simpatizante" a club for this league only,
+  // "auto" (the side-panel search) decides from the current state.
+  function selectTeam(team, role = "auto") {
     const picked = pickedClub(team);
     state.focusId = picked.id;
     chrome.storage.local.set({ [FOCUS_KEY]: picked.id });
     const mainPlaysHere = !!state.main && !!state.model?.teams.has(state.main.id);
-    if (!state.main || mainPlaysHere) {
+    const asMain = role === "hincha" || (role === "auto" && (!state.main || mainPlaysHere));
+    if (asMain) {
       // First pick, or changing the main team from a league where it plays.
       state.main = picked;
       store.set(picked);
@@ -1199,6 +1267,151 @@
     renderStrip();
     applyHighlight(state.fav);
     renderPanel();
+  }
+
+  /* ---------- welcome: first-run onboarding ---------- */
+
+  // Shown once, on a league page, to someone with no club yet: welcome → "hincha"
+  // (main club) → optional "simpatizante" → done. ONBOARD_KEY is kept per browser.
+  const ONBOARD_KEY = "pgOnboarded";
+  const onboard = { step: 0, hincha: null, simp: null };
+  let wback;
+
+  function startOnboarding() {
+    if (!state.model?.teams.size) return;
+    Object.assign(onboard, { step: 0, hincha: null, simp: null });
+    wback.hidden = false;
+    renderOnboarding();
+  }
+
+  function closeOnboarding({ openPanel = false } = {}) {
+    wback.hidden = true;
+    chrome.storage.local.set({ [ONBOARD_KEY]: true });
+    if (openPanel && feat("dock")) {
+      state.open = true;
+      chrome.storage.local.set({ [OPEN_KEY]: true });
+      syncDock();
+    }
+  }
+
+  function finishOnboarding() {
+    if (onboard.hincha) selectTeam(onboard.hincha, "hincha");
+    if (onboard.simp) selectTeam(onboard.simp, "simpatizante");
+    // The hincha club stays the active one; the simpatizante is one click away.
+    if (onboard.hincha) {
+      state.focusId = onboard.hincha.id;
+      chrome.storage.local.set({ [FOCUS_KEY]: onboard.hincha.id });
+      resolveFav();
+      refresh();
+    }
+    onboard.step = 3;
+    chrome.storage.local.set({ [ONBOARD_KEY]: true });
+    renderOnboarding();
+  }
+
+  // Grid of crests with a search box; `onPick` runs on click, selection is marked in place.
+  function crestPicker(teams, selectedId, onPick) {
+    const input = el("input", { type: "search", placeholder: "Buscar club…", "aria-label": "Buscar club" });
+    const buttons = teams.map((t) => {
+      const b = el("button", { class: `wteam${t.id === selectedId ? " on" : ""}`, title: t.name }, [
+        el("img", { src: crest(t.id), alt: "" }),
+        el("span", { text: t.short_name || t.name }),
+      ]);
+      b.addEventListener("click", () => {
+        buttons.forEach(([, other]) => other.classList.remove("on"));
+        b.classList.add("on");
+        onPick(t);
+      });
+      return [t, b];
+    });
+    input.addEventListener("input", () => {
+      const q = norm(input.value);
+      buttons.forEach(([t, b]) => {
+        b.hidden = !!q && !norm(t.name).includes(q) && !norm(t.short_name).includes(q);
+      });
+    });
+    return el("div", { class: "wpicker" }, [input, el("div", { class: "wgrid" }, buttons.map(([, b]) => b))]);
+  }
+
+  function renderOnboarding() {
+    const lg = state.data?.league;
+    const teams = [...state.model.teams.values()].sort((a, b) => a.name.localeCompare(b.name));
+    const dots = el("div", { class: "wdots", "aria-hidden": "true" }, [0, 1, 2, 3].map((i) => el("i", { class: i === onboard.step ? "on" : "" })));
+    const skip = el("button", { class: "link wskip", text: "Saltar", onclick: () => closeOnboarding({ openPanel: !state.main }) });
+    const primary = (text, onclick) => el("button", { class: "wbtn primary", text, onclick });
+    const ghost = (text, onclick) => el("button", { class: "wbtn", text, onclick });
+    const go = (step) => () => {
+      onboard.step = step;
+      renderOnboarding();
+    };
+    let body;
+
+    if (onboard.step === 0) {
+      body = [
+        el("div", { class: "wlogo", text: "G" }),
+        el("h2", { text: "¡Bienvenido a Glow para Promiedos!" }),
+        el("p", { class: "wlead", text: "Hacé de Promiedos tu cancha: tu club primero y todo lo demás sin ruido." }),
+        el("div", { class: "wperks" }, [
+          el("span", { text: "⭐ Tu club en la barra" }),
+          el("span", { text: "📊 Estadísticas y noticias" }),
+          el("span", { text: "🌙 Tema oscuro, sin publicidad" }),
+        ]),
+        el("div", { class: "wnav one" }, [primary("Empezar", go(1))]),
+      ];
+    } else if (onboard.step === 1) {
+      const next = primary("Siguiente", go(2));
+      next.disabled = !onboard.hincha;
+      body = [
+        el("h2", { text: "¿De qué club sos hincha?" }),
+        el("p", { class: "wlead", text: `Elegí tu club del alma en ${lg?.name || "esta liga"}. Va a ser tu club principal y lo vas a ver siempre arriba.` }),
+        crestPicker(teams, onboard.hincha?.id, (t) => {
+          onboard.hincha = t;
+          if (onboard.simp?.id === t.id) onboard.simp = null;
+          next.disabled = false;
+        }),
+        el("p", { class: "whint", text: "¿Tu club juega en otra liga? Abrí esa liga más tarde y te lo vamos a preguntar ahí." }),
+        el("div", { class: "wnav" }, [ghost("Atrás", go(0)), next]),
+      ];
+    } else if (onboard.step === 2) {
+      const others = teams.filter((t) => t.id !== onboard.hincha?.id);
+      const done = primary("Listo", finishOnboarding);
+      done.disabled = !onboard.simp;
+      body = [
+        el("h2", { text: "¿Simpatizás con otro club?" }),
+        el("p", { class: "wlead", text: "Es opcional. Sumá un club que te caiga bien y lo seguís con un toque desde la barra de arriba." }),
+        crestPicker(others, onboard.simp?.id, (t) => {
+          onboard.simp = t;
+          done.disabled = false;
+        }),
+        el("div", { class: "wnav" }, [
+          ghost("Atrás", go(1)),
+          ghost("No, gracias", () => {
+            onboard.simp = null;
+            finishOnboarding();
+          }),
+          done,
+        ]),
+      ];
+    } else {
+      body = [
+        el("div", { class: "wcrests" }, [
+          onboard.hincha ? el("img", { class: "big", src: crest(onboard.hincha.id), alt: "" }) : null,
+          onboard.simp ? el("img", { src: crest(onboard.simp.id), alt: "" }) : null,
+        ]),
+        el("h2", { text: onboard.hincha ? `¡Listo, ${onboard.hincha.short_name || onboard.hincha.name}!` : "¡Listo!" }),
+        el("p", { class: "wlead", text: "Tocá su escudo en la barra de arriba para ver posición, goles y noticias. Con ⚙ prendés o apagás cada mejora." }),
+        el("div", { class: "wnav one" }, [primary("Ver mi equipo", () => closeOnboarding({ openPanel: true }))]),
+      ];
+    }
+
+    wback.replaceChildren(
+      el("div", { class: "wcard", role: "dialog", "aria-modal": "true", "aria-label": "Bienvenida a Glow para Promiedos" }, [
+        onboard.step < 3 ? skip : null,
+        ...body,
+        dots,
+      ]),
+    );
+    wback.querySelector(".wbtn.primary:not([disabled]), .wteam, .wpicker input")?.focus({ preventScroll: true });
   }
 
   /* ---------- preferences storage (Google account sync) ---------- */
@@ -1290,6 +1503,14 @@
     applyOffAttr();
     mount();
     applyFeatures(); // renders the bar, panel, left handle and the switches
+
+    // First run on a league page, with no club chosen yet: welcome and guide the choice.
+    const onboarded = await new Promise((res) => chrome.storage.local.get(ONBOARD_KEY, (r) => res(r[ONBOARD_KEY] === true)));
+    if (!onboarded && !state.main && state.model?.teams.size) {
+      state.open = false; // the welcome replaces the auto-opened side panel
+      syncDock();
+      startOnboarding();
+    }
 
     // Another Chrome signed in with the same Google account changed a preference:
     // pick it up live. Our own writes land here too; they're skipped when nothing differs.
