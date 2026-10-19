@@ -1,0 +1,74 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Build and validate the zip only; do not publish"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      # Only a manual run with dry_run left on skips publishing. Tag pushes always publish.
+      DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Read manifest version
+        id: manifest
+        run: echo "version=$(node -p "require('./manifest.json').version")" >> "$GITHUB_OUTPUT"
+
+      - name: Check that the tag matches manifest.json
+        if: github.ref_type == 'tag'
+        env:
+          TAG: ${{ github.ref_name }}
+          VERSION: ${{ steps.manifest.outputs.version }}
+        run: |
+          if [ "$TAG" != "v$VERSION" ]; then
+            echo "Tag $TAG does not match manifest.json version v$VERSION" >&2
+            exit 1
+          fi
+
+      - name: Build the extension zip
+        env:
+          VERSION: ${{ steps.manifest.outputs.version }}
+        run: |
+          mkdir -p dist
+          ZIP="dist/glow-para-promiedos-$VERSION.zip"
+          rm -f "$ZIP"
+          zip -r -X "$ZIP" manifest.json background.js content.js content.css layout.js socials.json icons
+          unzip -Z1 "$ZIP" | grep -qx 'manifest.json' || { echo "manifest.json is not at the zip root" >&2; exit 1; }
+          unzip -l "$ZIP"
+          echo "ZIP=$ZIP" >> "$GITHUB_ENV"
+
+      - name: Publish to the Chrome Web Store
+        if: env.DRY_RUN != 'true'
+        env:
+          CWS_SERVICE_ACCOUNT_JSON: ${{ secrets.CWS_SERVICE_ACCOUNT_JSON }}
+          CWS_PUBLISHER_ID: ${{ secrets.CWS_PUBLISHER_ID }}
+          CWS_EXTENSION_ID: ${{ secrets.CWS_EXTENSION_ID }}
+        run: node tools/cws-publish.mjs "$ZIP"
+
+      - name: Create GitHub Release
+        if: github.ref_type == 'tag' && env.DRY_RUN != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: gh release create "$TAG" "$ZIP" --title "$TAG" --generate-notes --verify-tag
