@@ -172,6 +172,21 @@ const scenarios = {
     out.reload = { welcomeAgain: await shadow("return !sh.querySelector('.wback').hidden") };
     return out;
   },
+  async pnsocials() {
+    const FERRO_MAIN = { ...FERRO };
+    await go(`${BASE}/league/primera-nacional/ebj`, 1500);
+    await clearAll();
+    await seed({ pgFavTeam: FERRO_MAIN });
+    await seed({ pgDockOpen: true, pgOnboarded: true }, "local");
+    await go(`${BASE}/league/primera-nacional/ebj`);
+    const out = {
+      hero: await shadow("return sh.querySelector('.hero')?.innerText.replace(/\\n/g,' / ')"),
+      socials: await shadow("return [...sh.querySelectorAll('.socials a')].map(a => a.innerText + ' -> ' + a.getAttribute('href'))"),
+      note: await shadow("return sh.querySelector('.note')?.innerText"),
+    };
+    out.shot = await shot("06-primera-nacional");
+    return out;
+  },
   async coffee() {
     await shadow("sh.querySelector('.hgear').click(); return 1");
     await sleep(500);
