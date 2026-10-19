@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Glow para Promiedos",
   "short_name": "Glow Promiedos",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "description": "Mejoras no oficiales para Promiedos: tema oscuro, tus clubes en la barra, estadísticas, noticias y sin publicidad.",
   "minimum_chrome_version": "120",
   "icons": {

@@ -57,7 +57,7 @@ Glow para Promiedos no está afiliada, patrocinada ni respaldada por Promiedos n
 - [ ] Cuenta de desarrollador de Chrome Web Store: pago único (USD 5 al momento de escribir esto; confirmalo en el panel) y verificación en dos pasos activada en la cuenta de Google. El correo del desarrollador no se puede cambiar después.
 - [ ] Declarar si sos "trader" o "no trader" (obligatorio por la ley de servicios digitales de la UE).
 - [ ] Poner la política de privacidad en una URL pública (GitHub Pages, Google Sites, Notion público) y reemplazar `[tu-correo@ejemplo.com]`.
-- [ ] Subir `dist/glow-para-promiedos-0.6.2.zip`.
+- [ ] Subir `dist/glow-para-promiedos-0.6.3.zip`.
 - [ ] Subir icono, captura(s) y tile de `store/`.
 - [ ] Completar "Privacy practices" con el texto de arriba.
 
