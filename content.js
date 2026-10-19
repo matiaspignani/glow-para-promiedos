@@ -231,7 +231,9 @@
         chrome.runtime.sendMessage({ type: "pg-news", query: `"${teamName}"` }, (res) => {
           if (chrome.runtime.lastError || !res?.ok) return resolve(null);
           const doc = new DOMParser().parseFromString(res.xml, "text/xml");
-          const items = [...doc.querySelectorAll("item")].slice(0, 6).map((i) => {
+          // The feed is relevance-ordered, not chronological: sort newest first, then take 6.
+          const dated = (i) => new Date(i.querySelector("pubDate")?.textContent || 0).getTime() || 0;
+          const items = [...doc.querySelectorAll("item")].sort((a, b) => dated(b) - dated(a)).slice(0, 6).map((i) => {
             const source = i.querySelector("source")?.textContent || "";
             let title = i.querySelector("title")?.textContent || "";
             if (source && title.endsWith(` - ${source}`)) title = title.slice(0, -(source.length + 3));
