@@ -99,6 +99,18 @@
     }
   }
 
+  // Match pages (/game/<slug>/<id>): the game, with its form and head-to-head data.
+  function readGameData() {
+    try {
+      const raw = document.getElementById("__NEXT_DATA__")?.textContent;
+      const game = JSON.parse(raw).props.pageProps.initialData?.game;
+      const parts = location.pathname.split("/").filter(Boolean);
+      return parts[0] === "game" && game?.id === parts[2] ? game : null;
+    } catch {
+      return null;
+    }
+  }
+
   const num = (v) => (v === undefined || v === "" ? NaN : Number(v));
 
   function buildModel(data) {
@@ -472,6 +484,65 @@
     @media (min-width: 2560px) { .side-inner { font-size: 16px; } .handle { font-size: 16px; } }
     .go { margin-top: 10px; width: 100%; background: rgba(182,242,107,.12); color: #b6f26b; border: 1px solid rgba(182,242,107,.35);
       border-radius: 10px; padding: 8px; font-weight: 600; cursor: pointer; }
+
+    /* Next match: chip, card, result rows, history */
+    .mpill[hidden], .fab[hidden], .fabs[hidden] { display: none; }
+    .mpill { display: flex; align-items: center; gap: 8px; flex: none; background: rgba(255,255,255,.07); color: #e8f1ec;
+      border: 1px solid rgba(255,255,255,.2); border-radius: 12px; padding: 4px 12px; cursor: pointer; white-space: nowrap; text-align: left; }
+    .mpill:hover { border-color: #b6f26b; }
+    .mpill .mtxt { display: flex; flex-direction: column; line-height: 1.15; }
+    .mpill small { font-size: 9.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #8aa399; }
+    .mpill b { font-size: 14px; font-weight: 800; }
+    .mpill .clock { font-size: 18px; }
+    .mpill.live { border-color: #e5484d; background: rgba(229,72,77,.14); }
+    .mpill.live small { color: #ff8a8d; }
+    .mpill.float { position: fixed; top: calc(var(--bar-h, 0px) + 10px); right: calc(var(--pg-dock-w, 0px) + 12px); z-index: 2147482500;
+      background: #0e211a; box-shadow: 0 8px 24px rgba(0,0,0,.45); }
+    .mpill.float[data-dock="true"] { display: none; }
+    .dot { flex: none; width: 9px; height: 9px; border-radius: 50%; background: #e5484d; animation: pgpulse 1.4s infinite; }
+    @keyframes pgpulse { 0% { box-shadow: 0 0 0 0 rgba(229,72,77,.6); } 70%, 100% { box-shadow: 0 0 0 7px rgba(229,72,77,0); } }
+    @media (prefers-reduced-motion: reduce) { .dot { animation: none; } }
+    .fabs { position: fixed; left: 54px; bottom: 10px; z-index: 2147483000; display: flex; gap: 8px; }
+    .fab { display: flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px; cursor: pointer; font-size: 12px;
+      font-weight: 700; color: #e8f1ec; background: #0e211a; border: 1px solid rgba(255,255,255,.22); box-shadow: 0 8px 24px rgba(0,0,0,.45); }
+    .fab:hover { border-color: #b6f26b; }
+    .livebtn.on { background: #e5484d; border-color: #e5484d; color: #fff; }
+    .livebtn.on .dot { background: #fff; animation: none; }
+    a.gcard { display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: 12px; background: #12291f;
+      border: 1px solid rgba(255,255,255,.08); color: #e8f1ec; text-decoration: none; }
+    a.gcard:hover { border-color: #b6f26b; }
+    a.gcard.live { border-color: #e5484d; }
+    a.gcard img { width: 38px; height: 38px; object-fit: contain; flex: none; }
+    a.gcard > div { min-width: 0; flex: 1; }
+    a.gcard b { display: block; font-size: 14px; }
+    a.gcard small { color: #8aa399; font-size: 11px; }
+    a.gcard .gright { flex: none; text-align: right; }
+    a.gcard .gright b { font-size: 18px; color: #b6f26b; white-space: nowrap; }
+    a.gcard.live .gright b { color: #ff8a8d; }
+    a.rrow { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,.07);
+      color: #e8f1ec; text-decoration: none; font-size: 12.5px; }
+    a.rrow:hover { color: #b6f26b; }
+    a.rrow i { flex: none; width: 20px; height: 20px; border-radius: 6px; display: grid; place-items: center; font-style: normal;
+      font-weight: 700; font-size: 11px; color: #fff; }
+    a.rrow .w, .form .w { background: #2fb457; } a.rrow .d { background: #6b7c74; } a.rrow .l { background: #e5484d; }
+    a.rrow .sc { margin-left: auto; font-weight: 700; white-space: nowrap; }
+    .hist { margin-top: 0; padding-bottom: 14px; border-bottom: 1px solid rgba(182,242,107,.35); }
+    h3.sub { margin-top: 14px; }
+    .hvs { display: flex; align-items: center; justify-content: center; gap: 10px; text-align: center; }
+    .hvs img { width: 34px; height: 34px; object-fit: contain; flex: none; }
+    .tvline { margin: 10px 0 0; padding: 8px 10px; border-radius: 10px; line-height: 1.4; background: rgba(182,242,107,.1);
+      border: 1px solid rgba(182,242,107,.3); }
+    .frow { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+    .frow img { width: 24px; height: 24px; object-fit: contain; }
+    .frow .n { flex: 1; font-weight: 600; }
+    .frow .form { margin-top: 0; }
+    .h2h { display: flex; height: 10px; border-radius: 6px; overflow: hidden; margin: 6px 0 4px; background: #12291f; }
+    .h2h .a { background: #b6f26b; } .h2h .x { background: #6b7c74; } .h2h .b { background: #4cc9f0; }
+    .h2hlab { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 11px; color: #8aa399; }
+    @media (max-width: 767.98px) {
+      .mpill.float { top: auto; bottom: 62px; right: 10px; }
+      .fabs { left: 54px; bottom: 10px; }
+    }
   `;
 
   const state = {
@@ -490,6 +561,8 @@
     socials: null,
     model: null,
     data: null,
+    game: null, // match shown on /game/ pages (for the history section)
+    liveOnly: false,
     open: false,
     leftCollapsed: false,
     newsCache: new Map(),
@@ -545,6 +618,7 @@
   const HANDLE_W = 34;
   const sideWidth = (vw) => (vw >= 2560 ? 520 : vw >= 1920 ? 440 : 380);
   let dock, handle, lhandle, hstrip, hLeague, hTeam, hMine, hGear, sgear, spop, panel, displayEl, shadow;
+  let mpill, fabs, livebtn, histbtn;
 
   function mount() {
     const host = el("div", { id: "pg-host" });
@@ -581,7 +655,22 @@
     sgear = el("button", { class: "sgear", title: "Ajustes de mejoras", "aria-label": "Ajustes de mejoras", text: "⚙", onclick: toggleSettings });
     spop = el("div", { class: "spop", role: "dialog", "aria-label": "Ajustes de mejoras", hidden: "" });
     wback = el("div", { class: "wback", hidden: "" });
-    shadow.append(el("style", { text: CSS }), dock, lhandle, hstrip, sgear, spop, wback);
+    // Next-match chip (moves into the top bar when that is visible) and the corner
+    // buttons: live-only filter and, on match pages, a shortcut to the history.
+    mpill = el("button", { class: "mpill float", hidden: "", onclick: onPill });
+    livebtn = el("button", {
+      class: "fab livebtn",
+      hidden: "",
+      onclick: () => ((state.liveOnly = !state.liveOnly), syncLive()),
+    });
+    histbtn = el("button", {
+      class: "fab histbtn",
+      hidden: "",
+      text: "📊 Historial del partido",
+      onclick: toggle,
+    });
+    fabs = el("div", { class: "fabs", hidden: "" }, [livebtn, histbtn]);
+    shadow.append(el("style", { text: CSS }), dock, lhandle, hstrip, sgear, spop, wback, mpill, fabs);
 
     document.documentElement.append(host);
     renderDisplayInfo(window.__pgLayout);
@@ -615,7 +704,11 @@
     hstrip.hidden = !on;
     sgear.hidden = on; // the bar carries its own gear when it is visible
     document.documentElement.dataset.pgStrip = on ? "on" : "off";
-    if (!on) return;
+    if (!on) {
+      floatPill();
+      return;
+    }
+    mpill.classList.remove("float");
     const label = (caption, text) =>
       el("div", { class: "lbl" }, [el("small", { text: caption }), el("b", { text: text })]);
 
@@ -660,7 +753,7 @@
     );
     // Grey crests except the active one; hover shows colour (see .gray in the CSS).
     hMine.classList.toggle("gray", feat("gray"));
-    hMine.replaceChildren(...crests, hTeam, hGear);
+    hMine.replaceChildren(...crests, hTeam, mpill, hGear);
     positionStrip();
   }
 
@@ -746,6 +839,8 @@
     root.style.setProperty("--pg-dock-w", `${docked ? HANDLE_W + (pushed ? side : 0) : 0}px`);
     // The settings card sits under the bar and beside the dock, never over it.
     spop.style.setProperty("--bar-h", `${bar}px`);
+    mpill.style.setProperty("--bar-h", `${bar}px`);
+    mpill.dataset.dock = String(open); // the open panel already shows the same match
     spop.style.setProperty("--dock-off", `${docked ? HANDLE_W + (open ? side : 0) : 0}px`);
   }
 
@@ -763,6 +858,9 @@
     { key: "news", label: "Noticias del club", hint: "Notas de la semana dentro del panel." },
     { key: "socials", label: "Redes oficiales", hint: "Enlaces oficiales del club dentro del panel." },
     { key: "leftmenu", label: "Minimizar el menú izquierdo", hint: "Botón para ocultar el menú lateral del sitio." },
+    { key: "match", label: "Próximo partido de mi equipo", hint: "Cuenta regresiva, rival y últimos resultados de tu club, en cualquier página." },
+    { key: "live", label: "Filtro “Solo en vivo”", hint: "Botón para mostrar solo los partidos que se están jugando." },
+    { key: "history", label: "Historial del partido", hint: "En cada partido: últimos resultados, antecedentes entre ambos y dónde verlo." },
   ];
 
   // Only disabled features are stored (state.features[key] === false).
@@ -928,6 +1026,7 @@
     state.open = !state.open;
     chrome.storage.local.set({ [OPEN_KEY]: state.open });
     syncDock();
+    syncLive();
   }
 
   function renderLauncher() {
@@ -971,13 +1070,375 @@
     return el("section", {}, [input, sugg]);
   }
 
-  async function renderPanel() {
-    panel.replaceChildren();
-    if (!state.model) {
-      panel.append(el("p", { class: "muted", text: "Recargá la página (F5) para cargar los datos de esta liga." }));
+  /* ---------- my matches: next game, countdown, live filter, history ---------- */
+
+  const GAMES_TTL = 10 * 60 * 1000;
+  const LIVE_TTL = 60 * 1000;
+  const gamesCache = new Map(); // club id -> { at, data }
+  const gamesPending = new Map();
+
+  function pagePropsFrom(html) {
+    const m = /<script id="__NEXT_DATA__"[^>]*>([\s\S]*?)<\/script>/.exec(html);
+    try {
+      return m ? JSON.parse(m[1]).props.pageProps : null;
+    } catch {
+      return null;
+    }
+  }
+
+  // Same-origin page fetch: the site's own data, nothing leaves promiedos.com.ar.
+  async function fetchPageProps(path) {
+    try {
+      const res = await fetch(path, { credentials: "omit" });
+      return res.ok ? pagePropsFrom(await res.text()) : null;
+    } catch {
+      return null;
+    }
+  }
+
+  // "20-10-2026 21:30" is Argentina time (UTC-3, no DST).
+  function parseStart(s) {
+    const m = /^(\d\d)-(\d\d)-(\d{4}) (\d\d):(\d\d)/.exec(s || "");
+    return m ? new Date(`${m[3]}-${m[2]}-${m[1]}T${m[4]}:${m[5]}:00-03:00`) : null;
+  }
+
+  function normGame(g, clubId) {
+    if (!g?.id || !Array.isArray(g.teams)) return null;
+    const home = g.teams[0]?.id === clubId;
+    const sc = Array.isArray(g.scores) ? g.scores : null;
+    return {
+      id: g.id,
+      url: g.url_name,
+      opp: g.teams.find((t) => t.id !== clubId) || g.teams[1],
+      home,
+      at: parseStart(g.start_time),
+      live: g.status?.enum === 2,
+      done: g.status?.enum === 3,
+      minute: g.game_time_to_display || g.status?.name || "",
+      mine: sc ? (home ? sc[0] : sc[1]) : null,
+      theirs: sc ? (home ? sc[1] : sc[0]) : null,
+      round: g.stage_round_name || "",
+    };
+  }
+
+  // The club's schedule from its own team page: upcoming (soonest first) and
+  // played (latest first). Cached, and refreshed every minute while a game is live.
+  function loadTeamGames(club) {
+    const hit = gamesCache.get(club.id);
+    const ttl = hit?.data?.next.some((g) => g.live) ? LIVE_TTL : GAMES_TTL;
+    if (hit && Date.now() - hit.at < ttl) return Promise.resolve(hit.data);
+    if (gamesPending.has(club.id)) return gamesPending.get(club.id);
+    const url = `/team/${encodeURIComponent(club.url_name || "equipo")}/${encodeURIComponent(club.id)}`;
+    const p = fetchPageProps(url).then((props) => {
+      const games = props?.data?.games;
+      const rows = (part) => (games?.[part]?.rows || []).map((r) => normGame(r.game, club.id)).filter((g) => g?.at);
+      const data = games ? { next: rows("next").sort((a, b) => a.at - b.at), last: rows("last").sort((a, b) => b.at - a.at) } : null;
+      // A failed lookup is retried after a minute instead of waiting out the TTL.
+      gamesCache.set(club.id, { at: data ? Date.now() : Date.now() - GAMES_TTL + 60000, data });
+      gamesPending.delete(club.id);
+      return data;
+    });
+    gamesPending.set(club.id, p);
+    return p;
+  }
+
+  const nextOf = (data) => data?.next.find((g) => g.live) || data?.next.find((g) => !g.done) || null;
+  const shortName = (t) => t?.short_name || t?.name || "";
+  const resultOf = (g) => (g.mine > g.theirs ? "w" : g.mine < g.theirs ? "l" : "d");
+  const RESULT_LETTER = { w: "V", d: "E", l: "D" };
+  const dateShort = (d) => d.toLocaleDateString("es-AR", { day: "2-digit", month: "2-digit" });
+
+  function whenLabel(d) {
+    const now = new Date();
+    const hm = d.toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit", hour12: false });
+    if (d.toDateString() === now.toDateString()) return `Hoy ${hm}`;
+    if (d.toDateString() === new Date(now.getTime() + 864e5).toDateString()) return `Mañana ${hm}`;
+    return `${d.toLocaleDateString("es-AR", { weekday: "short", day: "numeric", month: "numeric" })} ${hm}`;
+  }
+
+  function countdownText(ms) {
+    if (ms <= 0) return "¡Ya empieza!";
+    const mins = Math.floor(ms / 60000);
+    const d = Math.floor(mins / 1440);
+    const h = Math.floor((mins % 1440) / 60);
+    const m = mins % 60;
+    return d ? `${d} d ${h} h` : h ? `${h} h ${m} min` : `${Math.max(1, m)} min`;
+  }
+
+  const gameHref = (g) => `/game/${g.url}/${g.id}`;
+
+  // Compact chip with the next match of the active club. Lives in the top bar when
+  // that is visible and floats in the corner everywhere else (home, team, game pages).
+  async function renderPill() {
+    if (!mpill) return;
+    const club = state.fav;
+    if (!feat("match") || !club) {
+      mpill.hidden = true;
       return;
     }
+    const data = await loadTeamGames(club);
+    if (state.fav?.id !== club.id) return;
+    const g = nextOf(data);
+    if (!g) {
+      mpill.hidden = true;
+      return;
+    }
+    const opp = shortName(g.opp);
+    mpill.hidden = false;
+    mpill.classList.toggle("live", g.live);
+    mpill.title = `${club.name} vs ${g.opp.name}`;
+    mpill.replaceChildren(
+      g.live ? el("span", { class: "dot" }) : el("span", { class: "clock", text: "⏱" }),
+      el("span", { class: "mtxt" }, [
+        el("small", { text: g.live ? `En vivo · ${g.minute}` : `${whenLabel(g.at)} · vs ${opp}` }),
+        g.live
+          ? el("b", { text: `${shortName(club)} ${g.mine ?? 0}-${g.theirs ?? 0} ${opp}` })
+          : el("b", { class: "cd", "data-at": String(g.at.getTime()), text: countdownText(g.at - Date.now()) }),
+      ]),
+    );
+  }
+
+  function onPill() {
+    if (feat("dock")) {
+      if (!state.open) toggle();
+      return;
+    }
+    const g = nextOf(gamesCache.get(state.fav?.id)?.data);
+    if (g) location.assign(gameHref(g));
+  }
+
+  function floatPill() {
+    if (!mpill) return;
+    mpill.classList.add("float");
+    if (mpill.parentNode !== shadow) shadow.append(mpill);
+  }
+
+  let tickCount = 0;
+  let lastKickoffRefresh = 0;
+  function tick() {
+    if (!shadow) return;
+    let kickoff = false;
+    shadow.querySelectorAll("[data-at]").forEach((n) => {
+      const ms = Number(n.dataset.at) - Date.now();
+      n.textContent = countdownText(ms);
+      if (ms <= 0) kickoff = true;
+    });
+    // At kickoff the schedule changes (the game turns live): refetch once a minute.
+    if (kickoff && Date.now() - lastKickoffRefresh > 60000) {
+      lastKickoffRefresh = Date.now();
+      gamesCache.clear();
+      renderPill();
+    } else if (++tickCount % 3 === 0) {
+      renderPill(); // cached; only goes to the network while a game is live
+    }
+  }
+
+  function gameCard(g) {
+    return el("a", { class: `gcard${g.live ? " live" : ""}`, href: gameHref(g) }, [
+      el("img", { src: crest(g.opp.id), alt: "" }),
+      el("div", {}, [
+        el("b", { text: g.opp.name }),
+        el("small", { text: `${g.home ? "Local" : "Visitante"}${g.round ? ` · ${g.round}` : ""}` }),
+      ]),
+      el("div", { class: "gright" }, [
+        g.live
+          ? el("b", { text: `${g.mine ?? 0}-${g.theirs ?? 0}` })
+          : el("b", { class: "cd", "data-at": String(g.at.getTime()), text: countdownText(g.at - Date.now()) }),
+        el("small", { text: g.live ? `En vivo · ${g.minute}` : whenLabel(g.at) }),
+      ]),
+    ]);
+  }
+
+  function resultRow(g) {
+    const r = resultOf(g);
+    return el("a", { class: "rrow", href: gameHref(g) }, [
+      el("i", { class: r, text: RESULT_LETTER[r] }),
+      el("span", { text: `${dateShort(g.at)} · ${g.home ? "vs" : "en"} ${shortName(g.opp)}` }),
+      el("span", { class: "sc", text: `${g.mine}-${g.theirs}` }),
+    ]);
+  }
+
+  // Next game with countdown, the games after it and the last five results.
+  function matchSection(club) {
+    const box = el("div", { class: "mbox" });
+    const next = el("section", {}, [el("h3", { text: "Próximo partido" }), el("p", { class: "muted", text: "Cargando…" })]);
+    box.append(next);
+    loadTeamGames(club).then((data) => {
+      const g = nextOf(data);
+      next.replaceChildren(el("h3", { text: g?.live ? "En vivo ahora" : "Próximo partido" }));
+      if (g) next.append(gameCard(g));
+      else next.append(el("p", { class: "muted", text: data ? "No hay partidos programados." : "No pude traer los partidos ahora." }));
+      const later = (data?.next || []).filter((x) => x !== g && !x.done).slice(0, 3);
+      if (later.length) {
+        later.forEach((x) =>
+          next.append(
+            el("a", { class: "rrow", href: gameHref(x) }, [
+              el("span", { class: "muted", text: dateShort(x.at) }),
+              el("span", { text: `${x.home ? "vs" : "en"} ${shortName(x.opp)}` }),
+              el("span", { class: "sc muted", text: whenLabel(x.at).split(" ").pop() }),
+            ]),
+          ),
+        );
+      }
+      const last = (data?.last || []).slice(0, 5);
+      if (last.length) box.append(el("section", {}, [el("h3", { text: "Últimos partidos" }), ...last.map(resultRow)]));
+    });
+    return box;
+  }
+
+  // Match page: what the site dropped from view but still ships in its data —
+  // recent form of both teams, head-to-head record and TV channels.
+  const FORM_CLASS = { 1: "w", 2: "d", 0: "l" };
+  const FORM_LETTER = { 1: "V", 2: "E", 0: "D" };
+
+  function formRow(team, results) {
+    return el("div", { class: "frow" }, [
+      el("img", { src: crest(team.id), alt: "" }),
+      el("span", { class: "n", text: shortName(team) }),
+      el(
+        "div",
+        { class: "form" },
+        (results || []).slice(0, 5).map((x) => el("i", { class: FORM_CLASS[x] || "l", text: FORM_LETTER[x] ?? "–" })),
+      ),
+    ]);
+  }
+
+  function historySection(gm) {
+    const [home, away] = gm.teams || [];
+    if (!home || !away) return null;
+    const sec = el("section", { class: "hist" }, [
+      el("h3", { text: "Historial del partido" }),
+      el("div", { class: "hvs" }, [
+        el("img", { src: crest(home.id), alt: "" }),
+        el("b", { text: `${shortName(home)} vs ${shortName(away)}` }),
+        el("img", { src: crest(away.id), alt: "" }),
+      ]),
+    ]);
+    const tv = (gm.game_info || []).find((r) => /tv/i.test(r.name) && r.value);
+    if (tv) sec.append(el("p", { class: "tvline", text: `📺 Dónde verlo: ${tv.value}` }));
+    (gm.game_info || [])
+      .filter((r) => /estadio|árbitro|arbitro/i.test(r.name) && r.value)
+      .forEach((r) => sec.append(el("p", { class: "note", text: `${r.name}: ${r.value}` })));
+
+    if (gm.recent_form) {
+      sec.append(
+        el("h3", { class: "sub", text: "Últimos 5 partidos (el más reciente primero)" }),
+        formRow(home, gm.recent_form.home),
+        formRow(away, gm.recent_form.away),
+      );
+    }
+
+    const h = gm.head_to_head;
+    const played = (h?.games || []).filter((x) => x.status?.enum === 3 && Array.isArray(x.scores));
+    if (played.length) {
+      const total = (h.home_wins || 0) + (h.draws || 0) + (h.away_wins || 0) || 1;
+      const seg = (cls, n) => el("span", { class: cls, style: `width:${(100 * (n || 0)) / total}%`, title: String(n || 0) });
+      sec.append(
+        el("h3", { class: "sub", text: `Antecedentes (últimos ${played.length})` }),
+        el("div", { class: "h2h" }, [seg("a", h.home_wins), seg("x", h.draws), seg("b", h.away_wins)]),
+        el("div", { class: "h2hlab" }, [
+          el("span", { text: `${shortName(home)} ${h.home_wins || 0}` }),
+          el("span", { text: `Empates ${h.draws || 0}` }),
+          el("span", { text: `${shortName(away)} ${h.away_wins || 0}` }),
+        ]),
+      );
+      played.slice(0, 5).forEach((x) => {
+        const [a, b] = x.teams;
+        const d = parseStart(x.start_time);
+        sec.append(
+          el("a", { class: "rrow", href: `/game/${x.url_name}/${x.id}` }, [
+            el("span", { class: "muted", text: d ? d.toLocaleDateString("es-AR", { day: "2-digit", month: "2-digit", year: "2-digit" }) : "" }),
+            el("span", { text: `${shortName(a)} ${x.scores[0]}-${x.scores[1]} ${shortName(b)}` }),
+            el("span", { class: "sc muted", text: x.league?.name?.replace(/^Liga Profesional.*/, "LPF") || "" }),
+          ]),
+        );
+      });
+    }
+    return sec;
+  }
+
+  // "Solo en vivo": hides every game row that isn't being played, and the league
+  // blocks left empty. Live rows carry the site's own time_live element.
+  const gameLinks = () => [...document.querySelectorAll('a[href^="/game/"]')];
+  const isLiveLink = (a) => !!a.querySelector('[class*="time_live"]');
+
+  function syncLive() {
+    if (!livebtn) return;
+    const links = gameLinks();
+    const show = feat("live") && links.length > 0;
+    const live = links.filter(isLiveLink);
+    const on = show && state.liveOnly;
+    document.querySelectorAll(".pg-nolive").forEach((n) => n.classList.remove("pg-nolive"));
+    if (on) {
+      links.filter((a) => !isLiveLink(a)).forEach((a) => {
+        let top = a;
+        for (let p = a.parentElement; p && p !== document.body; p = p.parentElement) {
+          const inside = p.querySelectorAll('a[href^="/game/"]');
+          if (inside.length === links.length && live.length) break; // the whole page, keep it
+          if (![...inside].every((x) => !isLiveLink(x))) break;
+          top = p;
+        }
+        top.classList.add("pg-nolive");
+      });
+    }
+    document.documentElement.dataset.pgLiveOnly = on ? "on" : "off";
+    livebtn.hidden = !show;
+    livebtn.classList.toggle("on", on);
+    const count = live.length;
+    livebtn.replaceChildren(
+      el("span", { class: "dot" }),
+      el("span", {
+        text: on
+          ? count
+            ? `Solo en vivo (${count}) · ver todos`
+            : "Sin partidos en vivo · ver todos"
+          : count
+            ? `Solo en vivo (${count})`
+            : "Solo en vivo",
+      }),
+    );
+    histbtn.hidden = !(state.game && feat("history") && !state.open);
+    fabs.hidden = livebtn.hidden && histbtn.hidden;
+  }
+
+  async function renderPanel() {
+    panel.replaceChildren();
     const league = state.data?.league;
+    if (state.game && feat("history")) {
+      const hist = historySection(state.game);
+      if (hist) panel.append(hist);
+    }
+    if (!state.model) {
+      // Home, team and match pages carry no league data, but the club is still known.
+      const club = state.fav;
+      if (!club) {
+        panel.append(
+          el("h3", { text: "Elegí tu equipo" }),
+          el("p", { class: "muted", text: "Entrá a una liga y elegí tu club: lo vas a ver acá en todas las páginas." }),
+          el("button", { class: "go", text: "Ir a la Liga Profesional", onclick: () => location.assign("/league/liga-profesional/hc") }),
+        );
+        return;
+      }
+      const lg = club.league;
+      panel.append(
+        el("div", { class: "hero" }, [
+          el("img", { src: crest(club.id), alt: "" }),
+          el("div", {}, [el("b", { text: club.name }), el("span", { text: "Tu equipo" })]),
+          el("div", { class: "acts" }, [
+            el("button", {
+              class: "link",
+              text: "Cambiar",
+              onclick: () => location.assign(`/league/${lg?.url_name || "liga-profesional"}/${lg?.id || "hc"}`),
+            }),
+          ]),
+        ]),
+      );
+      if (feat("match")) panel.append(matchSection(club));
+      const socials = feat("socials") ? socialsSection(club) : null;
+      if (socials) panel.append(socials);
+      await appendNews(club);
+      return;
+    }
     const clubs = myClubs();
     if (clubs.length > 1 && !state.picking) {
       panel.append(
@@ -1025,6 +1486,7 @@
       ]),
     );
 
+    if (feat("match")) panel.append(matchSection(team));
     const stats = teamStats(state.model, team.id);
     if (state.needsLeaguePick) {
       panel.append(
@@ -1120,6 +1582,10 @@
       );
     }
 
+    await appendNews(team);
+  }
+
+  async function appendNews(team) {
     if (!feat("news")) return;
     const newsBox = el("section", {}, [el("h3", { text: "Noticias de la semana" }), el("p", { class: "muted", text: "Cargando…" })]);
     panel.append(newsBox);
@@ -1269,6 +1735,8 @@
     renderStrip();
     applyHighlight(state.fav);
     renderPanel();
+    renderPill();
+    syncLive();
   }
 
   /* ---------- welcome: first-run onboarding ---------- */
@@ -1476,6 +1944,7 @@
   async function init() {
     state.data = readPageData();
     state.model = state.data ? buildModel(state.data) : null;
+    state.game = readGameData();
     await initPrefsStorage();
     await loadPrefs();
     state.leagueId = state.data?.league?.id || null;
@@ -1531,8 +2000,45 @@
     let t;
     new MutationObserver(() => {
       clearTimeout(t);
-      t = setTimeout(() => applyHighlight(state.fav), 150);
+      t = setTimeout(() => {
+        applyHighlight(state.fav);
+        syncLive();
+      }, 150);
     }).observe(document.getElementById("__next") || document.body, { childList: true, subtree: true });
+
+    // The site is a single-page app: moving between home, leagues and matches does
+    // not reload the page (and __NEXT_DATA__ goes stale), so follow the URL and
+    // fetch the data of the page we landed on.
+    let lastPath = location.pathname;
+    setInterval(() => {
+      if (location.pathname === lastPath) return;
+      lastPath = location.pathname;
+      onRoute();
+    }, 700);
+    setInterval(tick, 20000);
+  }
+
+  async function onRoute() {
+    const path = location.pathname;
+    const parts = path.split("/").filter(Boolean);
+    let data = null;
+    let game = null;
+    if (parts[0] === "league" && parts[2]) {
+      const props = await fetchPageProps(path);
+      data = props?.data?.league?.id === parts[2] ? props.data : null;
+    } else if (parts[0] === "game" && parts[2]) {
+      const game0 = (await fetchPageProps(path))?.initialData?.game;
+      game = game0?.id === parts[2] ? game0 : null;
+    }
+    if (location.pathname !== path) return; // navigated again while fetching
+    state.data = data;
+    state.model = data ? buildModel(data) : null;
+    state.game = game;
+    state.leagueId = data?.league?.id || null;
+    state.picking = false;
+    resolveFav();
+    refresh();
+    syncDock();
   }
 
   init();
