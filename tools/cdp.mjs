@@ -252,7 +252,7 @@ const scenarios = {
       g.strokeStyle = '#b6f26b'; g.lineWidth = 9; g.beginPath(); g.arc(88, 100, 44, 0, Math.PI * 2); g.stroke();
       g.fillStyle = '#b6f26b'; g.font = '800 56px Arial'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('G', 88, 104);
       g.textAlign = 'left'; g.fillStyle = '#e8f1ec'; g.font = '800 38px Arial'; g.fillText('Glow para', 160, 84); g.fillText('Promiedos', 160, 128);
-      g.font = '500 20px Arial'; g.fillStyle = '#b6f26b'; g.fillText('Tu club primero. Sin publicidad.', 36, 200);
+      g.font = '500 20px Arial'; g.fillStyle = '#b6f26b'; g.fillText('Tu club primero, siempre.', 36, 200);
       g.font = '500 15px Arial'; g.fillStyle = '#8aa399'; g.fillText('Extensión no oficial · Tema oscuro · Mis clubes', 36, 240);
       return c.toDataURL('image/png'); })()`);
     fs.mkdirSync(path.join(OUT), { recursive: true });
