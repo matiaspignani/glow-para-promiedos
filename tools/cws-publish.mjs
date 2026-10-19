@@ -67,8 +67,9 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const inProgress = (state) => state === "IN_PROGRESS" || state === "UPLOAD_IN_PROGRESS";
 
 async function main() {
+  const checkOnly = process.argv[2] === "--check";
   const zipPath = process.argv[2];
-  if (!zipPath) fail("usage: node tools/cws-publish.mjs <path-to-zip>");
+  if (!zipPath) fail("usage: node tools/cws-publish.mjs <path-to-zip> | --check");
 
   let key;
   try {
@@ -78,11 +79,24 @@ async function main() {
   }
   const publisher = need("CWS_PUBLISHER_ID").trim();
   const extension = need("CWS_EXTENSION_ID").trim();
-  const zip = await readFile(zipPath).catch(() => fail(`cannot read ${zipPath}`));
+  const zip = checkOnly ? null : await readFile(zipPath).catch(() => fail(`cannot read ${zipPath}`));
 
   const item = `publishers/${encodeURIComponent(publisher)}/items/${encodeURIComponent(extension)}`;
   const token = await getAccessToken(key);
   const auth = { Authorization: `Bearer ${token}` };
+
+  if (checkOnly) {
+    // Read-only: proves the service account, publisher ID and extension ID work.
+    const st = await fetch(`${API}/v2/${item}:fetchStatus`, { headers: auth });
+    if (!st.ok) fail(`fetchStatus failed: ${await describe(st)}`);
+    const s = await st.json();
+    const rev = (r) => (r ? `${r.state ?? "?"} (${(r.distributionChannels ?? []).map((c) => c.crxVersion).join(", ") || "no version"})` : "none");
+    console.log("Credentials OK (read-only check, nothing uploaded or published).");
+    console.log(`Published revision: ${rev(s.publishedItemRevisionStatus)}`);
+    console.log(`Submitted revision: ${rev(s.submittedItemRevisionStatus)}`);
+    console.log(`Last async upload: ${s.lastAsyncUploadState ?? "none in the last 24h"}; takenDown=${Boolean(s.takenDown)}; warned=${Boolean(s.warned)}`);
+    return;
+  }
 
   console.log(`Uploading ${zipPath} (${zip.length} bytes)...`);
   const up = await fetch(`${API}/upload/v2/${item}:upload`, {
