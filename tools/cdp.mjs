@@ -289,6 +289,34 @@ const scenarios = {
     out.gameShot = await shot("15-spa-game");
     return out;
   },
+  // Calendar page: how the site renders under the extension.
+  async calendar() {
+    await go(`${BASE}/league/liga-profesional/hc`, 1500);
+    await clearAll();
+    await seed({ pgFavTeam: BOCA });
+    await seed({ pgOnboarded: true, pgDockOpen: false }, "local");
+    await go(`${BASE}/calendario`, 6000);
+    const out = {
+      title: await ev("document.title"),
+      classes: await ev("[...new Set([...document.querySelectorAll('main *, #__next *')].map(e => e.className).filter(c => typeof c === 'string' && /calend|month|week|day/i.test(c)))].slice(0, 25)"),
+      scrollW: await ev("document.documentElement.scrollWidth + ' / ' + innerWidth"),
+      // Second day column, walked three levels deep: class, text, background and colour.
+      styles: await ev(`(() => {
+        const col = document.querySelectorAll('[class*="calendario-item_block"]')[1];
+        const rows = [];
+        const walk = (e, d) => {
+          if (d > 3 || rows.length > 30) return;
+          const c = getComputedStyle(e);
+          rows.push('  '.repeat(d) + e.tagName + '.' + String(e.className).replace(/__\\w+/g, '').replace('calendario-', '') + ' | ' + (e.children.length ? '' : e.textContent.trim().slice(0, 18)) + ' | bg ' + c.backgroundColor + ' | fg ' + c.color);
+          [...e.children].slice(0, 3).forEach((k) => walk(k, d + 1));
+        };
+        walk(col, 0);
+        return rows;
+      })()`),
+    };
+    out.shot = await shot("20-calendar");
+    return out;
+  },
   // Match page: history section from the page data.
   async game() {
     await go(`${BASE}/league/liga-profesional/hc`, 1500);
