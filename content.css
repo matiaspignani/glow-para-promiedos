@@ -393,3 +393,12 @@ html:not([data-pg-off~="highlight"]) {
 html:not([data-pg-off~="live"])[data-pg-live-only="on"] .pg-nolive {
   display: none !important;
 }
+/* Calendar (/calendario): the site draws dark text on light tiles; with the dark
+   tiles of the theme that text vanished and the column body showed white gaps. */
+html:not([data-pg-off~="theme"]) {
+  & [class*="calendario-item_content"] { background: transparent !important; }
+  & [class*="calendario-item_item"] { border: 1px solid var(--pg-line); }
+  & [class*="calendario-item_name"] { color: var(--pg-text) !important; }
+  & [class*="calendario-item_text"] { color: var(--pg-muted) !important; }
+  & a[class*="calendario-item_link"]:hover { border-color: var(--pg-accent); background: var(--pg-accent-soft); }
+}
