@@ -21,7 +21,7 @@ Glow para Promiedos es una extensión **no oficial** que rediseña la experienci
 
 • Tema oscuro con tablas, tarjetas y escudos más legibles.
 • Barra superior con la liga y los escudos de todos tus clubes (el activo en color, el resto en gris).
-• Panel "Mi equipo": posición, puntos, goles, efectividad, líderes de la tabla, tus jugadores en los rankings, noticias de la semana y redes oficiales del club.
+• Panel "Mi equipo": posición, puntos, goles, efectividad, líderes de la tabla, tus jugadores en los rankings, noticias de la semana y redes oficiales del club (Liga Profesional y Primera Nacional).
 • Elegí un club distinto para cada liga: la extensión te lo pregunta y lo recuerda.
 • Pestaña "Equipos y estadísticas" con tarjetas y escudos más grandes.
 • Oculta los banners publicitarios del sitio.
@@ -57,7 +57,7 @@ Glow para Promiedos no está afiliada, patrocinada ni respaldada por Promiedos n
 - [ ] Cuenta de desarrollador de Chrome Web Store: pago único (USD 5 al momento de escribir esto; confirmalo en el panel) y verificación en dos pasos activada en la cuenta de Google. El correo del desarrollador no se puede cambiar después.
 - [ ] Declarar si sos "trader" o "no trader" (obligatorio por la ley de servicios digitales de la UE).
 - [ ] Poner la política de privacidad en una URL pública (GitHub Pages, Google Sites, Notion público) y reemplazar `[tu-correo@ejemplo.com]`.
-- [ ] Subir `dist/glow-para-promiedos-0.6.1.zip`.
+- [ ] Subir `dist/glow-para-promiedos-0.6.2.zip`.
 - [ ] Subir icono, captura(s) y tile de `store/`.
 - [ ] Completar "Privacy practices" con el texto de arriba.
 
