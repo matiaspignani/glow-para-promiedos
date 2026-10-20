@@ -25,6 +25,7 @@ Glow para Promiedos es una extensión **no oficial** que rediseña la experienci
 • Tu club en todas las páginas del sitio, no solo en las ligas: cuenta regresiva al próximo partido, rival, últimos resultados y "En vivo" cuando juega.
 • Historial en cada partido: forma reciente de ambos equipos, antecedentes entre ellos y dónde verlo por TV.
 • Botón "Solo en vivo" para ver únicamente los partidos que se están jugando.
+• Calendario filtrable: solo los partidos de tus equipos, una liga a elección u ocultar cumpleaños y aniversarios.
 • Elegí un club distinto para cada liga: la extensión te lo pregunta y lo recuerda.
 • Pestaña "Equipos y estadísticas" con tarjetas y escudos más grandes.
 • Se adapta a tu pantalla: tablas en columnas, partidos siempre a la vista y menú izquierdo minimizable.
@@ -59,7 +60,7 @@ Glow para Promiedos no está afiliada, patrocinada ni respaldada por Promiedos n
 - [ ] Cuenta de desarrollador de Chrome Web Store: pago único (USD 5 al momento de escribir esto; confirmalo en el panel) y verificación en dos pasos activada en la cuenta de Google. El correo del desarrollador no se puede cambiar después.
 - [ ] Declarar si sos "trader" o "no trader" (obligatorio por la ley de servicios digitales de la UE).
 - [ ] Poner la política de privacidad en una URL pública (GitHub Pages, Google Sites, Notion público) y reemplazar `[tu-correo@ejemplo.com]`.
-- [ ] Subir `dist/glow-para-promiedos-0.7.0.zip`.
+- [ ] Subir `dist/glow-para-promiedos-0.8.0.zip`.
 - [ ] Subir icono, captura(s) y tile de `store/`.
 - [ ] Completar "Privacy practices" con el texto de arriba.
 
