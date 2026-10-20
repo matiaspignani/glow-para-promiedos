@@ -289,6 +289,55 @@ const scenarios = {
     out.gameShot = await shot("15-spa-game");
     return out;
   },
+  // Ultrawide window (2560x1238 viewport), home page, club saved, nothing else stored.
+  async ultrawide() {
+    await send("Emulation.setDeviceMetricsOverride", { width: 2560, height: 1238, deviceScaleFactor: 0.75, mobile: false });
+    await go(`${BASE}/league/liga-profesional/hc`, 1500);
+    await clearAll();
+    await seed({ pgFavTeam: BOCA });
+    await go(`${BASE}/`, 6000);
+    const out = {
+      panel: await shadow("return sh.querySelector('.side-inner')?.innerText.replace(/\\n/g,' / ').slice(0, 300)"),
+      pill: await shadow("const p = sh.querySelector('.mpill'); return p ? [p.hidden, p.className, p.innerText.replace(/\\n/g,' / ')] : null"),
+      dock: await shadow("return sh.querySelector('.dock').dataset.open"),
+    };
+    out.shot = await shot("30-ultrawide");
+    await send("Emulation.setDeviceMetricsOverride", { width: 1280, height: 800, deviceScaleFactor: 1, mobile: false });
+    return out;
+  },
+  // Only a per-league club saved (no main club): the home page must still show it.
+  async homeLeagueOnly() {
+    await go(`${BASE}/league/liga-profesional/hc`, 1500);
+    await clearAll();
+    await seed({ pgLeagueFavs: { hc: BOCA } });
+    await seed({ pgOnboarded: true, pgDockOpen: false }, "local");
+    await go(`${BASE}/`, 6000);
+    return { pill: await shadow("const p = sh.querySelector('.mpill'); return p ? [p.hidden, p.innerText.replace(/\\n/g,' / ')] : null") };
+  },
+  // Calendar filters: my clubs, one league, birthdays.
+  async calfilter() {
+    await go(`${BASE}/league/liga-profesional/hc`, 1500);
+    await clearAll();
+    await seed({ pgFavTeam: BOCA });
+    await seed({ pgOnboarded: true, pgDockOpen: false }, "local");
+    await go(`${BASE}/calendario`, 6000);
+    const visibleGames = "[...document.querySelectorAll('a[href^=\"/game/\"]')].filter(a => a.offsetParent !== null).length";
+    const visibleExtras = "[...document.querySelectorAll('[class*=\"label_block\"]')].filter(l => /cumplea|aniversario/i.test(l.textContent) && l.offsetParent !== null).length";
+    const out = { bar: await shadow("return sh.querySelector('.calbar').innerText.replace(/\\n/g,' | ')"), all: await ev(visibleGames), extras: await ev(visibleExtras) };
+    await shadow("sh.querySelector('.calbar .fab:nth-child(3)').click(); return 1");
+    await sleep(500);
+    out.noBirthdays = await ev(visibleExtras);
+    await shadow("[...sh.querySelectorAll('.calbar .fab')][0].click(); return 1");
+    await sleep(500);
+    out.mine = { games: await ev(visibleGames), bar: await shadow("return sh.querySelector('.calcount').innerText") };
+    out.mineShot = await shot("21-cal-mine");
+    await shadow("[...sh.querySelectorAll('.calbar .fab')][0].click(); return 1");
+    await shadow("const s = sh.querySelector('.calsel'); s.value = [...s.options].find(o => /Serie A/.test(o.value))?.value || s.options[1].value; s.dispatchEvent(new Event('change')); return s.value");
+    await sleep(500);
+    out.league = { games: await ev(visibleGames), sel: await shadow("return sh.querySelector('.calsel').value"), bar: await shadow("return sh.querySelector('.calcount').innerText") };
+    out.leagueShot = await shot("22-cal-league");
+    return out;
+  },
   // Calendar page: how the site renders under the extension.
   async calendar() {
     await go(`${BASE}/league/liga-profesional/hc`, 1500);
