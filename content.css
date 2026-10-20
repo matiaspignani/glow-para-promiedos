@@ -402,3 +402,6 @@ html:not([data-pg-off~="theme"]) {
   & [class*="calendario-item_text"] { color: var(--pg-muted) !important; }
   & a[class*="calendario-item_link"]:hover { border-color: var(--pg-accent); background: var(--pg-accent-soft); }
 }
+html:not([data-pg-off~="calendar"]) .pg-calhide {
+  display: none !important;
+}

@@ -499,6 +499,19 @@
     .mpill.float { position: fixed; top: calc(var(--bar-h, 0px) + 10px); right: calc(var(--pg-dock-w, 0px) + 12px); z-index: 2147482500;
       background: #0e211a; box-shadow: 0 8px 24px rgba(0,0,0,.45); }
     .mpill.float[data-dock="true"] { display: none; }
+    .calbar[hidden] { display: none; }
+    .calbar { position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%); z-index: 2147482500;
+      display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 999px; background: #0e211a;
+      border: 1px solid rgba(182,242,107,.35); box-shadow: 0 8px 24px rgba(0,0,0,.45); }
+    .calbar .fab { box-shadow: none; white-space: nowrap; }
+    .calbar .fab.on { background: rgba(182,242,107,.16); border-color: #b6f26b; color: #b6f26b; }
+    .calbar .fab:disabled { opacity: .5; cursor: not-allowed; }
+    .calsel { max-width: 200px; padding: 7px 10px; border-radius: 999px; border: 1px solid rgba(255,255,255,.22);
+      background: #12291f; color: #e8f1ec; font-size: 12px; font-weight: 700; cursor: pointer; }
+    .calcount { color: #8aa399; font-size: 11px; font-weight: 700; white-space: nowrap; padding: 0 6px; }
+    @media (max-width: 767.98px) {
+      .calbar { top: auto; bottom: 62px; left: 8px; right: 8px; transform: none; flex-wrap: wrap; border-radius: 16px; }
+    }
     .dot { flex: none; width: 9px; height: 9px; border-radius: 50%; background: #e5484d; animation: pgpulse 1.4s infinite; }
     @keyframes pgpulse { 0% { box-shadow: 0 0 0 0 rgba(229,72,77,.6); } 70%, 100% { box-shadow: 0 0 0 7px rgba(229,72,77,0); } }
     @media (prefers-reduced-motion: reduce) { .dot { animation: none; } }
@@ -563,6 +576,7 @@
     data: null,
     game: null, // match shown on /game/ pages (for the history section)
     liveOnly: false,
+    cal: { mine: false, league: "all", extras: true }, // /calendario filters (kept in CAL_KEY)
     open: false,
     leftCollapsed: false,
     newsCache: new Map(),
@@ -609,6 +623,10 @@
     } else if (state.main) {
       state.fav = state.main;
       state.favSource = "main";
+    } else if (!L && myClubs()[0]) {
+      // Outside a league (home, team and match pages) with only league picks: use the first.
+      state.fav = myClubs()[0];
+      state.favSource = myClubs()[0].kind;
     } else {
       state.fav = null;
       state.favSource = null;
@@ -618,7 +636,7 @@
   const HANDLE_W = 34;
   const sideWidth = (vw) => (vw >= 2560 ? 520 : vw >= 1920 ? 440 : 380);
   let dock, handle, lhandle, hstrip, hLeague, hTeam, hMine, hGear, sgear, spop, panel, displayEl, shadow;
-  let mpill, fabs, livebtn, histbtn;
+  let mpill, fabs, livebtn, histbtn, calbar;
 
   function mount() {
     const host = el("div", { id: "pg-host" });
@@ -670,7 +688,8 @@
       onclick: toggle,
     });
     fabs = el("div", { class: "fabs", hidden: "" }, [livebtn, histbtn]);
-    shadow.append(el("style", { text: CSS }), dock, lhandle, hstrip, sgear, spop, wback, mpill, fabs);
+    calbar = el("div", { class: "calbar", hidden: "", role: "group", "aria-label": "Filtros del calendario" });
+    shadow.append(el("style", { text: CSS }), dock, lhandle, hstrip, sgear, spop, wback, mpill, fabs, calbar);
 
     document.documentElement.append(host);
     renderDisplayInfo(window.__pgLayout);
@@ -841,6 +860,7 @@
     spop.style.setProperty("--bar-h", `${bar}px`);
     mpill.style.setProperty("--bar-h", `${bar}px`);
     mpill.dataset.dock = String(open); // the open panel already shows the same match
+    calbar.style.setProperty("--bar-h", `${bar}px`);
     spop.style.setProperty("--dock-off", `${docked ? HANDLE_W + (open ? side : 0) : 0}px`);
   }
 
@@ -860,6 +880,7 @@
     { key: "leftmenu", label: "Minimizar el menú izquierdo", hint: "Botón para ocultar el menú lateral del sitio." },
     { key: "match", label: "Próximo partido de mi equipo", hint: "Cuenta regresiva, rival y últimos resultados de tu club, en cualquier página." },
     { key: "live", label: "Filtro “Solo en vivo”", hint: "Botón para mostrar solo los partidos que se están jugando." },
+    { key: "calendar", label: "Filtros del calendario", hint: "En el calendario: solo tus equipos, una liga o sin cumpleaños." },
     { key: "history", label: "Historial del partido", hint: "En cada partido: últimos resultados, antecedentes entre ambos y dónde verlo." },
   ];
 
@@ -1401,6 +1422,74 @@
     fabs.hidden = livebtn.hidden && histbtn.hidden;
   }
 
+  // Calendar (/calendario): filter the week by my clubs, by league, and hide the
+  // birthdays and anniversaries. Group = a league label plus its games; rows are
+  // hidden with .pg-calhide (see content.css).
+  const CAL_KEY = "pgCal";
+  const onCalendar = () => location.pathname.replace(/\/$/, "") === "/calendario";
+  let calSig = "";
+
+  function setCal(patch) {
+    Object.assign(state.cal, patch);
+    chrome.storage.local.set({ [CAL_KEY]: state.cal });
+    calSig = "";
+    syncCalendar();
+  }
+
+  function syncCalendar() {
+    if (!calbar) return;
+    document.querySelectorAll(".pg-calhide").forEach((n) => n.classList.remove("pg-calhide"));
+    const on = feat("calendar") && onCalendar();
+    calbar.hidden = !on;
+    if (!on) return;
+
+    const groups = [...document.querySelectorAll('[class*="calendario-item_content"] [class*="label_block"]')].map((label) => ({
+      group: label.parentElement,
+      name: label.textContent.trim(),
+      extra: /cumplea|aniversario/i.test(label.textContent),
+    }));
+    const leagues = [...new Set(groups.filter((g) => !g.extra).map((g) => g.name))].sort((a, b) => a.localeCompare(b));
+    const cal = state.cal;
+    const league = leagues.includes(cal.league) ? cal.league : "all"; // not on this week's calendar: show all
+    const mine = new Set(myClubs().map((c) => c.url_name).filter(Boolean));
+    const isMine = (tile) => (tile.getAttribute("href") || "").split("/")[2]?.split("-vs-").some((s) => mine.has(s));
+
+    let shown = 0;
+    groups.forEach(({ group, name, extra }) => {
+      let hide = extra ? !cal.extras || (cal.mine && mine.size > 0) || league !== "all" : league !== "all" && name !== league;
+      if (!hide && !extra) {
+        const tiles = [...group.querySelectorAll('a[href^="/game/"]')];
+        if (cal.mine && mine.size) tiles.filter((t) => !isMine(t)).forEach((t) => t.classList.add("pg-calhide"));
+        const visible = tiles.filter((t) => !t.classList.contains("pg-calhide")).length;
+        hide = visible === 0;
+        shown += visible;
+      }
+      if (hide) group.classList.add("pg-calhide");
+    });
+
+    // Rebuild the bar only when something it shows changed (keeps an open select alive).
+    const sig = [leagues.join("|"), cal.mine, league, cal.extras, mine.size, shown].join(";");
+    if (sig === calSig) return;
+    calSig = sig;
+    const toggle = (label, active, onclick, disabled) => {
+      const b = el("button", { class: `fab${active ? " on" : ""}`, "aria-pressed": String(active), text: label, onclick });
+      if (disabled) b.disabled = true;
+      return b;
+    };
+    const select = el(
+      "select",
+      { class: "calsel", "aria-label": "Filtrar por liga", onchange: (e) => setCal({ league: e.target.value }) },
+      [el("option", { value: "all", text: "Todas las ligas" }), ...leagues.map((l) => el("option", { value: l, text: l }))],
+    );
+    select.value = league;
+    calbar.replaceChildren(
+      toggle(mine.size ? "⭐ Solo mis equipos" : "⭐ Elegí un equipo primero", cal.mine && mine.size > 0, () => setCal({ mine: !cal.mine }), !mine.size),
+      select,
+      toggle("🎂 Cumpleaños", cal.extras, () => setCal({ extras: !cal.extras })),
+      el("span", { class: "calcount", text: `${shown} ${shown === 1 ? "partido" : "partidos"}` }),
+    );
+  }
+
   async function renderPanel() {
     panel.replaceChildren();
     const league = state.data?.league;
@@ -1737,6 +1826,7 @@
     renderPanel();
     renderPill();
     syncLive();
+    syncCalendar();
   }
 
   /* ---------- welcome: first-run onboarding ---------- */
@@ -1945,6 +2035,8 @@
     state.data = readPageData();
     state.model = state.data ? buildModel(state.data) : null;
     state.game = readGameData();
+    const savedCal = await new Promise((res) => chrome.storage.local.get(CAL_KEY, (r) => res(r[CAL_KEY])));
+    if (savedCal && typeof savedCal === "object") Object.assign(state.cal, savedCal);
     await initPrefsStorage();
     await loadPrefs();
     state.leagueId = state.data?.league?.id || null;
@@ -2003,6 +2095,7 @@
       t = setTimeout(() => {
         applyHighlight(state.fav);
         syncLive();
+        syncCalendar();
       }, 150);
     }).observe(document.getElementById("__next") || document.body, { childList: true, subtree: true });
 
