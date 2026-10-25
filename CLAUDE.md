@@ -19,6 +19,8 @@ Extensión de Chrome (Manifest V3, sin build) que mejora promiedos.com.ar: tema 
 - Pruebas nuevas en `tools/cdp.mjs`: `home`, `game`, `route`, `calendar`, `calfilter`, `ultrawide`.
 - Calendario (`/calendario`, 0.8.0): barra de filtros en el Shadow DOM (solo mis equipos, liga, cumpleaños). Agrupa por `[class*="label_block"]` (la liga) y su contenedor; los partidos propios se reconocen por el slug del enlace (`a-vs-b`) contra `url_name` de mis clubes. Se ocultan con `.pg-calhide`; los filtros se guardan en `pgCal` (local).
 
+- Simulador "¿Qué pasa si…?" (0.9.0): en el panel, sobre la tabla del club. Toma el próximo partido de liga (ronda "Fecha N" contra un club de la misma tabla), suma 3/1/0 y recalcula la posición solo por puntos (sin desempates); muestra también qué pasa si el club de abajo gana. Prueba: `whatif` en `tools/cdp.mjs`.
+
 ## Datos
 Promiedos es Next.js: los datos salen del `<script id="__NEXT_DATA__">` de cada página. Páginas de liga: `/league/<slug>/<id>` (tablas) y `/league/<slug>/<id>/equipos` (equipos y estadísticas, sin tablas).
 
