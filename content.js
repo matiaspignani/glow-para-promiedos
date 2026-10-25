@@ -499,6 +499,12 @@
     .mpill.float { position: fixed; top: calc(var(--bar-h, 0px) + 10px); right: calc(var(--pg-dock-w, 0px) + 12px); z-index: 2147482500;
       background: #0e211a; box-shadow: 0 8px 24px rgba(0,0,0,.45); }
     .mpill.float[data-dock="true"] { display: none; }
+    .scn { display: flex; align-items: flex-start; gap: 10px; padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,.07); }
+    .scn i { flex: none; width: 22px; height: 22px; border-radius: 6px; display: grid; place-items: center; font-style: normal;
+      font-weight: 700; font-size: 11px; color: #fff; }
+    .scn .w { background: #2fb457; } .scn .d { background: #6b7c74; } .scn .l { background: #e5484d; }
+    .scnt b { display: block; font-size: 13px; }
+    .scnt small { display: block; margin-top: 2px; color: #8aa399; font-size: 11px; }
     .calbar[hidden] { display: none; }
     .calbar { position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%); z-index: 2147482500;
       display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 999px; background: #0e211a;
@@ -880,6 +886,7 @@
     { key: "leftmenu", label: "Minimizar el menú izquierdo", hint: "Botón para ocultar el menú lateral del sitio." },
     { key: "match", label: "Próximo partido de mi equipo", hint: "Cuenta regresiva, rival y últimos resultados de tu club, en cualquier página." },
     { key: "live", label: "Filtro “Solo en vivo”", hint: "Botón para mostrar solo los partidos que se están jugando." },
+    { key: "scenarios", label: "Simulador “¿Qué pasa si…?”", hint: "Cómo queda tu equipo en la tabla si gana, empata o pierde su próximo partido." },
     { key: "calendar", label: "Filtros del calendario", hint: "En el calendario: solo tus equipos, una liga o sin cumpleaños." },
     { key: "history", label: "Historial del partido", hint: "En cada partido: últimos resultados, antecedentes entre ambos y dónde verlo." },
   ];
@@ -1490,6 +1497,77 @@
     );
   }
 
+  // "What if": the table after my next league game ends in a win, a draw or a loss,
+  // by points only (tie-breakers aren't simulated). A league game is one called
+  // "Fecha N" against a club of the same table; cups use other round names.
+  function projectScenarios(rows, myId, oppId) {
+    const me = rows.find((r) => r.team.id === myId);
+    const opp = rows.find((r) => r.team.id === oppId);
+    if (!me || !opp) return null;
+    const below = rows.find((r) => r.pos === me.pos + 1);
+    const standing = (pts) => {
+      const mine = pts.get(myId);
+      let better = 0;
+      let tied = 0;
+      pts.forEach((p, id) => {
+        if (id === myId) return;
+        if (p > mine) better++;
+        else if (p === mine) tied++;
+      });
+      return { pts: mine, pos: better + 1, tied };
+    };
+    const base = new Map(rows.map((r) => [r.team.id, r.pts]));
+    return [
+      { key: "w", letter: "V", label: "Si ganás", mine: 3, theirs: 0 },
+      { key: "d", letter: "E", label: "Si empatás", mine: 1, theirs: 1 },
+      { key: "l", letter: "D", label: "Si perdés", mine: 0, theirs: 3 },
+    ].map((o) => {
+      const pts = new Map(base);
+      pts.set(myId, base.get(myId) + o.mine);
+      pts.set(oppId, base.get(oppId) + o.theirs);
+      const out = { ...o, now: standing(pts), belowTeam: null, ifBelow: null };
+      // The club right under me also wins: only meaningful when it isn't my rival.
+      if (below && below.team.id !== oppId) {
+        const alt = new Map(pts);
+        alt.set(below.team.id, alt.get(below.team.id) + 3);
+        out.belowTeam = below.team;
+        out.ifBelow = standing(alt);
+      }
+      return out;
+    });
+  }
+
+  const standingLabel = (s) => `${s.pos}º${s.tied ? ` (igualado con ${s.tied})` : ""}`;
+
+  function scenarioSection(s, team) {
+    const rows = state.model?.tables.find((t) => t.label === s.label)?.rows;
+    const sec = el("section", {}, [el("h3", { text: "¿Qué pasa si…?" }), el("p", { class: "muted", text: "Calculando…" })]);
+    if (!rows) return null;
+    loadTeamGames(team).then((data) => {
+      const g = data?.next.find((x) => !x.done && /^Fecha \d+/i.test(x.round) && rows.some((r) => r.team.id === x.opp?.id));
+      const result = g && projectScenarios(rows, team.id, g.opp.id);
+      if (!result) {
+        sec.remove();
+        return;
+      }
+      sec.replaceChildren(
+        el("h3", { text: "¿Qué pasa si…?" }),
+        el("p", { class: "muted", text: `${g.round} · ${g.home ? "vs" : "en"} ${g.opp.name}` }),
+        ...result.map((o) =>
+          el("div", { class: "scn" }, [
+            el("i", { class: o.key, text: o.letter }),
+            el("span", { class: "scnt" }, [
+              el("b", { text: `${o.label}: ${o.now.pts} pts · ${standingLabel(o.now)}` }),
+              o.ifBelow ? el("small", { text: `Si ${shortName(o.belowTeam)} también gana: ${standingLabel(o.ifBelow)}` }) : null,
+            ]),
+          ]),
+        ),
+        el("p", { class: "note", text: "Estimación por puntos; no incluye desempates ni otros resultados de la fecha." }),
+      );
+    });
+    return sec;
+  }
+
   async function renderPanel() {
     panel.replaceChildren();
     const league = state.data?.league;
@@ -1632,6 +1710,8 @@
       panel.append(sec);
       if (i === 0) {
         panel.append(el("button", { class: "go", onclick: scrollToTeam, text: "Ir a mi equipo en la tabla" }));
+        const what = feat("scenarios") ? scenarioSection(s, team) : null;
+        if (what) panel.append(what);
         if (s.leaders) {
           panel.append(
             el("section", {}, [
