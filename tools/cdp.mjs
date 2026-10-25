@@ -314,6 +314,24 @@ const scenarios = {
     await go(`${BASE}/`, 6000);
     return { pill: await shadow("const p = sh.querySelector('.mpill'); return p ? [p.hidden, p.innerText.replace(/\\n/g,' / ')] : null") };
   },
+  // "What if" simulator in the panel, on a league table.
+  async whatif() {
+    await go(`${BASE}/league/liga-profesional/hc`, 1500);
+    await clearAll();
+    await seed({ pgFavTeam: BOCA });
+    await seed({ pgOnboarded: true, pgDockOpen: true, pgFocus: "igg" }, "local");
+    await go(`${BASE}/league/liga-profesional/hc`, 6500);
+    const out = {
+      now: await shadow("return sh.querySelector('.stat b')?.innerText + ' pts'"),
+      table: await ev("(() => { const r = document.querySelector('tr.pg-fav-row'); return r ? r.innerText.replace(/\\s+/g, ' ') : null; })()"),
+      scn: await shadow("return [...sh.querySelectorAll('.scn, .scn ~ .muted')].map(n => n.innerText.replace(/\\n/g,' | '))"),
+      head: await shadow("const h = [...sh.querySelectorAll('h3')].find(x => /Qué pasa/.test(x.innerText)); return h ? h.parentElement.innerText.replace(/\\n/g,' | ') : null"),
+    };
+    await shadow("const h = [...sh.querySelectorAll('h3')].find(x => /Qué pasa/.test(x.innerText)); h?.scrollIntoView(); return 1");
+    await sleep(400);
+    out.shot = await shot("40-whatif");
+    return out;
+  },
   // Calendar filters: my clubs, one league, birthdays.
   async calfilter() {
     await go(`${BASE}/league/liga-profesional/hc`, 1500);
